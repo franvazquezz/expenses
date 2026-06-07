@@ -3,8 +3,10 @@ import SwiftData
 
 @Model
 final class Expense {
-    var amount: Double
-    var currency: String
+    var originalAmount: Double
+    var originalCurrency: String
+    var convertedAmount: Double
+    var baseCurrency: String
     var date: Date
     var category: String
     var expenseDescription: String
@@ -12,9 +14,24 @@ final class Expense {
     var paymentMethod: String
     var tags: [String]
 
+    var amount: Double {
+        get { originalAmount }
+        set {
+            originalAmount = newValue
+            convertedAmount = newValue
+        }
+    }
+
+    var currency: String {
+        get { originalCurrency }
+        set { originalCurrency = newValue }
+    }
+
     init(
         amount: Double,
         currency: String = "USD",
+        convertedAmount: Double? = nil,
+        baseCurrency: String? = nil,
         date: Date,
         category: String,
         expenseDescription: String = "",
@@ -22,8 +39,10 @@ final class Expense {
         paymentMethod: String = "",
         tags: [String] = []
     ) {
-        self.amount = amount
-        self.currency = currency
+        self.originalAmount = amount
+        self.originalCurrency = currency
+        self.convertedAmount = convertedAmount ?? amount
+        self.baseCurrency = baseCurrency ?? currency
         self.date = date
         self.category = category
         self.expenseDescription = expenseDescription

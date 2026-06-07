@@ -48,13 +48,13 @@ final class DashboardViewModel {
 
     func topCategories(from expenses: [Expense], limit: Int = 5) -> [CategoryTotal] {
         let groupedTotals = Dictionary(grouping: expenses) { expense in
-            "\(expense.category)|\(expense.currency)"
+            "\(expense.category)|\(expense.baseCurrency)"
         }
         .map { key, values -> CategoryTotal in
             let parts = key.split(separator: "|", maxSplits: 1).map(String.init)
             return CategoryTotal(
                 category: parts.first ?? "Sin categoria",
-                total: values.reduce(0) { $0 + $1.amount },
+                total: values.reduce(0) { $0 + $1.convertedAmount },
                 currency: parts.dropFirst().first ?? CurrencyOptions.defaultCurrency
             )
         }
@@ -63,9 +63,9 @@ final class DashboardViewModel {
     }
 
     private func totalsByCurrency(from expenses: [Expense]) -> [MoneyTotal] {
-        Dictionary(grouping: expenses, by: \.currency)
+        Dictionary(grouping: expenses, by: \.baseCurrency)
             .map { currency, values in
-                MoneyTotal(currency: currency, total: values.reduce(0) { $0 + $1.amount })
+                MoneyTotal(currency: currency, total: values.reduce(0) { $0 + $1.convertedAmount })
             }
             .sorted { $0.currency < $1.currency }
     }

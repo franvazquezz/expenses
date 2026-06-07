@@ -2,7 +2,10 @@ import SwiftData
 import SwiftUI
 
 struct DashboardView: View {
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
+    @Query(sort: \Currency.code) private var currencies: [Currency]
+    @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
 
     private let viewModel = DashboardViewModel()
 
@@ -20,11 +23,21 @@ struct DashboardView: View {
                 } label: {
                     Label("Gastos", systemImage: "list.bullet.rectangle")
                 }
+
+                NavigationLink {
+                    CurrencySettingsView()
+                } label: {
+                    Label("Monedas", systemImage: "dollarsign.circle")
+                }
             }
             .navigationTitle("expenses")
             .navigationSplitViewColumnWidth(min: 180, ideal: 220)
         } detail: {
             dashboardContent
+        }
+        .onAppear {
+            CurrencyViewModel.seedInitialCurrenciesIfNeeded(in: modelContext, existingCurrencies: currencies)
+            ExchangeRateViewModel.seedInitialRatesIfNeeded(in: modelContext, existingRates: exchangeRates)
         }
     }
 
@@ -96,7 +109,7 @@ struct DashboardView: View {
 
                         Spacer()
 
-                        Text(expense.amount, format: .currency(code: expense.currency))
+                        Text(expense.convertedAmount, format: .currency(code: expense.baseCurrency))
                             .monospacedDigit()
                     }
                     Divider()

@@ -16,6 +16,11 @@
 		100000000000000000000007 /* ExpenseFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000017 /* ExpenseFormViewModel.swift */; };
 		100000000000000000000008 /* ExpenseListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000018 /* ExpenseListViewModel.swift */; };
 		100000000000000000000009 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 100000000000000000000019 /* DashboardViewModel.swift */; };
+		1000000000000000000000A1 /* Currency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B1 /* Currency.swift */; };
+		1000000000000000000000A2 /* ExchangeRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B2 /* ExchangeRate.swift */; };
+		1000000000000000000000A3 /* CurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B3 /* CurrencyViewModel.swift */; };
+		1000000000000000000000A4 /* ExchangeRateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B4 /* ExchangeRateViewModel.swift */; };
+		1000000000000000000000A5 /* CurrencySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B5 /* CurrencySettingsView.swift */; };
 		200000000000000000000001 /* ExpenseFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* ExpenseFormViewModelTests.swift */; };
 		200000000000000000000002 /* ExpenseListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ExpenseListViewModelTests.swift */; };
 		200000000000000000000003 /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* DashboardViewModelTests.swift */; };
@@ -42,6 +47,11 @@
 		100000000000000000000017 /* ExpenseFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModel.swift; sourceTree = "<group>"; };
 		100000000000000000000018 /* ExpenseListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListViewModel.swift; sourceTree = "<group>"; };
 		100000000000000000000019 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000B1 /* Currency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Currency.swift; sourceTree = "<group>"; };
+		1000000000000000000000B2 /* ExchangeRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRate.swift; sourceTree = "<group>"; };
+		1000000000000000000000B3 /* CurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000B4 /* ExchangeRateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000B5 /* CurrencySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsView.swift; sourceTree = "<group>"; };
 		200000000000000000000010 /* expensesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = expensesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000011 /* ExpenseFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000012 /* ExpenseListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListViewModelTests.swift; sourceTree = "<group>"; };
@@ -93,6 +103,8 @@
 			isa = PBXGroup;
 			children = (
 				100000000000000000000012 /* Expense.swift */,
+				1000000000000000000000B1 /* Currency.swift */,
+				1000000000000000000000B2 /* ExchangeRate.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -104,6 +116,7 @@
 				100000000000000000000014 /* ExpenseListView.swift */,
 				100000000000000000000015 /* AddExpenseView.swift */,
 				100000000000000000000016 /* EditExpenseView.swift */,
+				1000000000000000000000B5 /* CurrencySettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -123,6 +136,8 @@
 				100000000000000000000017 /* ExpenseFormViewModel.swift */,
 				100000000000000000000018 /* ExpenseListViewModel.swift */,
 				100000000000000000000019 /* DashboardViewModel.swift */,
+				1000000000000000000000B3 /* CurrencyViewModel.swift */,
+				1000000000000000000000B4 /* ExchangeRateViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -246,6 +261,11 @@
 				100000000000000000000007 /* ExpenseFormViewModel.swift in Sources */,
 				100000000000000000000008 /* ExpenseListViewModel.swift in Sources */,
 				100000000000000000000009 /* DashboardViewModel.swift in Sources */,
+				1000000000000000000000A1 /* Currency.swift in Sources */,
+				1000000000000000000000A2 /* ExchangeRate.swift in Sources */,
+				1000000000000000000000A3 /* CurrencyViewModel.swift in Sources */,
+				1000000000000000000000A4 /* ExchangeRateViewModel.swift in Sources */,
+				1000000000000000000000A5 /* CurrencySettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

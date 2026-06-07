@@ -6,6 +6,8 @@ final class ExpenseFormViewModelTests: XCTestCase {
         let viewModel = ExpenseFormViewModel()
         viewModel.amountText = "123,45"
         viewModel.currency = "ARS"
+        viewModel.baseCurrency = "ARS"
+        viewModel.updateConversion(using: [])
         viewModel.category = "Comida"
         viewModel.expenseDescription = "Almuerzo"
         viewModel.note = "  menu ejecutivo  "
@@ -15,7 +17,10 @@ final class ExpenseFormViewModelTests: XCTestCase {
         let expense = viewModel.makeExpense()
 
         XCTAssertEqual(expense?.amount, 123.45)
-        XCTAssertEqual(expense?.currency, "ARS")
+        XCTAssertEqual(expense?.originalAmount, 123.45)
+        XCTAssertEqual(expense?.originalCurrency, "ARS")
+        XCTAssertEqual(expense?.convertedAmount, 123.45)
+        XCTAssertEqual(expense?.baseCurrency, "ARS")
         XCTAssertEqual(expense?.category, "Comida")
         XCTAssertEqual(expense?.expenseDescription, "Almuerzo")
         XCTAssertEqual(expense?.note, "menu ejecutivo")
@@ -33,6 +38,8 @@ final class ExpenseFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canSave)
 
         viewModel.amountText = "10"
+        viewModel.baseCurrency = viewModel.currency
+        viewModel.updateConversion(using: [])
         XCTAssertTrue(viewModel.canSave)
     }
 
@@ -42,15 +49,45 @@ final class ExpenseFormViewModelTests: XCTestCase {
 
         viewModel.amountText = "30"
         viewModel.currency = "EUR"
+        viewModel.baseCurrency = "ARS"
+        viewModel.updateConversion(using: [ExchangeRate(fromCurrency: "EUR", toCurrency: "ARS", rate: 1600)])
         viewModel.category = "Transporte"
         viewModel.expenseDescription = "Taxi"
         viewModel.tagsText = "viaje"
         viewModel.update(expense)
 
-        XCTAssertEqual(expense.amount, 30)
-        XCTAssertEqual(expense.currency, "EUR")
+        XCTAssertEqual(expense.originalAmount, 30)
+        XCTAssertEqual(expense.originalCurrency, "EUR")
+        XCTAssertEqual(expense.convertedAmount, 48000)
+        XCTAssertEqual(expense.baseCurrency, "ARS")
         XCTAssertEqual(expense.category, "Transporte")
         XCTAssertEqual(expense.expenseDescription, "Taxi")
         XCTAssertEqual(expense.tags, ["viaje"])
+    }
+
+    func testCalculatesConvertedAmountUsingManualExchangeRate() {
+        let viewModel = ExpenseFormViewModel()
+        viewModel.amountText = "100"
+        viewModel.currency = "USD"
+        viewModel.baseCurrency = "ARS"
+
+        viewModel.updateConversion(using: [
+            ExchangeRate(fromCurrency: "USD", toCurrency: "ARS", rate: 1400)
+        ])
+
+        XCTAssertEqual(viewModel.parsedConvertedAmount, 140000)
+    }
+
+    func testCalculatesConvertedAmountUsingInverseRate() {
+        let viewModel = ExpenseFormViewModel()
+        viewModel.amountText = "140000"
+        viewModel.currency = "ARS"
+        viewModel.baseCurrency = "USD"
+
+        viewModel.updateConversion(using: [
+            ExchangeRate(fromCurrency: "USD", toCurrency: "ARS", rate: 1400)
+        ])
+
+        XCTAssertEqual(viewModel.parsedConvertedAmount, 100)
     }
 }

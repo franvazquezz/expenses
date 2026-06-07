@@ -18,8 +18,10 @@ final class ExpenseListViewModel: ObservableObject {
 
     func duplicate(_ expense: Expense) -> Expense {
         Expense(
-            amount: expense.amount,
-            currency: expense.currency,
+            amount: expense.originalAmount,
+            currency: expense.originalCurrency,
+            convertedAmount: expense.convertedAmount,
+            baseCurrency: expense.baseCurrency,
             date: expense.date,
             category: expense.category,
             expenseDescription: expense.expenseDescription,

@@ -29,6 +29,26 @@
 - [x] Tests unitarios iniciales.
 - [x] Documentacion inicial.
 
+## Fase 2 - Multi-moneda
+
+- [x] Modelo `Currency`.
+- [x] Crear moneda.
+- [x] Editar moneda.
+- [x] Desactivar moneda.
+- [x] Elegir moneda principal.
+- [x] Semilla inicial: Peso Argentino ARS.
+- [x] Semilla inicial: Dolar Estadounidense USD.
+- [x] Semilla inicial: Euro EUR.
+- [x] Modelo `ExchangeRate` para cotizaciones manuales.
+- [x] Cotizaciones iniciales: `USD -> ARS = 1400`.
+- [x] Cotizaciones iniciales: `EUR -> ARS = 1600`.
+- [x] Expense guarda `originalAmount`.
+- [x] Expense guarda `originalCurrency`.
+- [x] Expense guarda `convertedAmount`.
+- [x] Expense guarda `baseCurrency`.
+- [x] Dashboard usa montos convertidos para estadisticas.
+- [x] Tests de conversion manual.
+
 ## Proximas fases posibles
 
 - Presupuestos mensuales por categoria.
@@ -38,4 +58,5 @@
 - Graficos por mes y categoria.
 - Preferencias de moneda principal.
 - Conversion de moneda si se define fuente de tipo de cambio.
+- Conversion automatica con API: ExchangeRate API, Frankfurter u Open Exchange Rates.
 - UI tests para flujos completos.

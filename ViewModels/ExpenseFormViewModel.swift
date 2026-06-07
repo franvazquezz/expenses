@@ -3,6 +3,8 @@ import Foundation
 final class ExpenseFormViewModel: ObservableObject {
     @Published var amountText: String
     @Published var currency: String
+    @Published var convertedAmountText: String
+    @Published var baseCurrency: String
     @Published var date: Date
     @Published var category: String
     @Published var expenseDescription: String
@@ -11,8 +13,10 @@ final class ExpenseFormViewModel: ObservableObject {
     @Published var tagsText: String
 
     init(expense: Expense? = nil) {
-        amountText = expense.map { Self.amountFormatter.string(from: NSNumber(value: $0.amount)) ?? "\($0.amount)" } ?? ""
-        currency = expense?.currency ?? CurrencyOptions.defaultCurrency
+        amountText = expense.map { Self.amountFormatter.string(from: NSNumber(value: $0.originalAmount)) ?? "\($0.originalAmount)" } ?? ""
+        currency = expense?.originalCurrency ?? CurrencyOptions.defaultCurrency
+        convertedAmountText = expense.map { Self.amountFormatter.string(from: NSNumber(value: $0.convertedAmount)) ?? "\($0.convertedAmount)" } ?? ""
+        baseCurrency = expense?.baseCurrency ?? CurrencyOptions.defaultCurrency
         date = expense?.date ?? Date()
         category = expense?.category ?? ExpenseCategories.defaultCategory
         expenseDescription = expense?.expenseDescription ?? ""
@@ -22,19 +26,23 @@ final class ExpenseFormViewModel: ObservableObject {
     }
 
     var parsedAmount: Double? {
-        let normalizedAmount = amountText
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacingOccurrences(of: ",", with: ".")
+        parseAmount(amountText)
+    }
 
-        guard let amount = Double(normalizedAmount), amount > 0 else {
-            return nil
-        }
-
-        return amount
+    var parsedConvertedAmount: Double? {
+        parseAmount(convertedAmountText)
     }
 
     var canSave: Bool {
-        parsedAmount != nil && !category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        parsedAmount != nil &&
+        parsedConvertedAmount != nil &&
+        !category.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty &&
+        !currency.isEmpty &&
+        !baseCurrency.isEmpty
+    }
+
+    var needsConversion: Bool {
+        currency != baseCurrency
     }
 
     var tags: [String] {
@@ -44,14 +52,44 @@ final class ExpenseFormViewModel: ObservableObject {
             .filter { !$0.isEmpty }
     }
 
-    func makeExpense() -> Expense? {
+    func setDefaultCurrencyIfNeeded(_ defaultCurrency: String) {
+        guard amountText.isEmpty else {
+            return
+        }
+
+        currency = defaultCurrency
+        baseCurrency = defaultCurrency
+        convertedAmountText = amountText
+    }
+
+    func updateConversion(using rates: [ExchangeRate]) {
         guard let amount = parsedAmount else {
+            convertedAmountText = ""
+            return
+        }
+
+        guard let convertedAmount = ExchangeRateViewModel.convertedAmount(
+            amount: amount,
+            from: currency,
+            to: baseCurrency,
+            rates: rates
+        ) else {
+            return
+        }
+
+        convertedAmountText = Self.amountFormatter.string(from: NSNumber(value: convertedAmount)) ?? "\(convertedAmount)"
+    }
+
+    func makeExpense() -> Expense? {
+        guard let amount = parsedAmount, let convertedAmount = parsedConvertedAmount else {
             return nil
         }
 
         return Expense(
             amount: amount,
             currency: currency,
+            convertedAmount: convertedAmount,
+            baseCurrency: baseCurrency,
             date: date,
             category: category,
             expenseDescription: cleaned(expenseDescription),
@@ -62,12 +100,14 @@ final class ExpenseFormViewModel: ObservableObject {
     }
 
     func update(_ expense: Expense) {
-        guard let amount = parsedAmount else {
+        guard let amount = parsedAmount, let convertedAmount = parsedConvertedAmount else {
             return
         }
 
-        expense.amount = amount
-        expense.currency = currency
+        expense.originalAmount = amount
+        expense.originalCurrency = currency
+        expense.convertedAmount = convertedAmount
+        expense.baseCurrency = baseCurrency
         expense.date = date
         expense.category = category
         expense.expenseDescription = cleaned(expenseDescription)
@@ -80,10 +120,23 @@ final class ExpenseFormViewModel: ObservableObject {
         value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private func parseAmount(_ value: String) -> Double? {
+        let normalizedAmount = value
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .replacingOccurrences(of: ",", with: ".")
+
+        guard let amount = Double(normalizedAmount), amount > 0 else {
+            return nil
+        }
+
+        return amount
+    }
+
     private static let amountFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
         formatter.maximumFractionDigits = 2
+        formatter.usesGroupingSeparator = false
         return formatter
     }()
 }
@@ -105,8 +158,8 @@ enum ExpenseCategories {
 }
 
 enum CurrencyOptions {
-    static let all = ["ARS", "USD", "EUR", "BRL", "CLP", "UYU"]
-    static let defaultCurrency = "USD"
+    static let all = ["ARS", "USD", "EUR"]
+    static let defaultCurrency = "ARS"
 }
 
 enum PaymentMethodOptions {

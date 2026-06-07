@@ -15,6 +15,10 @@ Fase 1 en progreso:
 - Crear, editar, eliminar y duplicar gastos.
 - Campos de gasto: monto, moneda, fecha, categoria, descripcion, metodo de pago, notas y etiquetas.
 - Dashboard con totales del mes, totales del ano, gastos del dia, ultimos gastos y categorias con mayor gasto.
+- Multi-moneda con monedas personalizables.
+- Moneda principal configurable.
+- Cotizaciones manuales locales.
+- Conversión guardada por gasto: monto original, moneda original, monto convertido y moneda base.
 
 ## Abrir en Xcode
 

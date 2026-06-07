@@ -11,6 +11,8 @@ Para esta fase, la logica importante esta en los view models y se puede probar c
 - Filtros de gastos.
 - Duplicado de gastos.
 - Calculos del dashboard.
+- Conversion manual entre monedas.
+- Uso de `convertedAmount` en estadisticas.
 
 ## Ejecutar tests
 
@@ -35,3 +37,11 @@ Los tests iniciales cubren los view models. Las vistas SwiftUI quedan fuera de t
 - `ExpenseFormViewModelTests`
 - `ExpenseListViewModelTests`
 - `DashboardViewModelTests`
+
+## Multi-moneda
+
+La Fase 2 agrega tests para:
+
+- Calcular `100 USD -> 140000 ARS` con tasa `USD -> ARS = 1400`.
+- Calcular conversion inversa cuando solo existe la tasa opuesta.
+- Verificar que el dashboard suma `convertedAmount`, no `originalAmount`.

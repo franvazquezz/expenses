@@ -6,15 +6,14 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel()
         let today = Date()
         let expenses = [
-            Expense(amount: 100, currency: "ARS", date: today, category: "Comida"),
-            Expense(amount: 50, currency: "ARS", date: today, category: "Transporte"),
-            Expense(amount: 10, currency: "USD", date: today, category: "Ocio")
+            Expense(amount: 100, currency: "USD", convertedAmount: 140000, baseCurrency: "ARS", date: today, category: "Comida"),
+            Expense(amount: 50, currency: "ARS", convertedAmount: 50, baseCurrency: "ARS", date: today, category: "Transporte"),
+            Expense(amount: 10, currency: "EUR", convertedAmount: 16000, baseCurrency: "ARS", date: today, category: "Ocio")
         ]
 
         let totals = viewModel.totalsThisMonth(from: expenses)
 
-        XCTAssertEqual(totals.first { $0.currency == "ARS" }?.total, 150)
-        XCTAssertEqual(totals.first { $0.currency == "USD" }?.total, 10)
+        XCTAssertEqual(totals.first { $0.currency == "ARS" }?.total, 156050)
     }
 
     func testLatestExpensesAreSortedByDateDescending() {
@@ -32,15 +31,15 @@ final class DashboardViewModelTests: XCTestCase {
         let viewModel = DashboardViewModel()
         let today = Date()
         let expenses = [
-            Expense(amount: 100, currency: "ARS", date: today, category: "Comida"),
-            Expense(amount: 40, currency: "ARS", date: today, category: "Comida"),
-            Expense(amount: 20, currency: "USD", date: today, category: "Comida")
+            Expense(amount: 100, currency: "USD", convertedAmount: 140000, baseCurrency: "ARS", date: today, category: "Comida"),
+            Expense(amount: 40, currency: "ARS", convertedAmount: 40, baseCurrency: "ARS", date: today, category: "Comida"),
+            Expense(amount: 20, currency: "EUR", convertedAmount: 32000, baseCurrency: "ARS", date: today, category: "Comida")
         ]
 
         let categories = viewModel.topCategories(from: expenses)
 
         XCTAssertEqual(categories.first?.category, "Comida")
         XCTAssertEqual(categories.first?.currency, "ARS")
-        XCTAssertEqual(categories.first?.total, 140)
+        XCTAssertEqual(categories.first?.total, 172040)
     }
 }

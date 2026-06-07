@@ -1,7 +1,9 @@
+import SwiftData
 import SwiftUI
 
 struct EditExpenseView: View {
     @Environment(\.dismiss) private var dismiss
+    @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
 
     let expense: Expense
 
@@ -31,6 +33,9 @@ struct EditExpenseView: View {
                 }
         }
         .frame(minWidth: 480, minHeight: 520)
+        .onAppear {
+            viewModel.updateConversion(using: exchangeRates)
+        }
     }
 
     private func updateExpense() {

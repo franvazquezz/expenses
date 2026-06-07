@@ -96,8 +96,18 @@ struct ExpenseListView: View {
             }
 
             TableColumn("Monto") { expense in
-                Text(expense.amount, format: .currency(code: expense.currency))
-                    .monospacedDigit()
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(expense.originalAmount, format: .currency(code: expense.originalCurrency))
+                        .monospacedDigit()
+
+                    if expense.originalCurrency != expense.baseCurrency ||
+                        expense.originalAmount != expense.convertedAmount {
+                        Text(expense.convertedAmount, format: .currency(code: expense.baseCurrency))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    }
+                }
             }
 
             TableColumn("Pago") { expense in

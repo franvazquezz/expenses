@@ -35,7 +35,9 @@ final class ExpenseListViewModelTests: XCTestCase {
 
         XCTAssertFalse(duplicate === source)
         XCTAssertEqual(duplicate.amount, source.amount)
-        XCTAssertEqual(duplicate.currency, source.currency)
+        XCTAssertEqual(duplicate.originalCurrency, source.originalCurrency)
+        XCTAssertEqual(duplicate.convertedAmount, source.convertedAmount)
+        XCTAssertEqual(duplicate.baseCurrency, source.baseCurrency)
         XCTAssertEqual(duplicate.category, source.category)
         XCTAssertEqual(duplicate.expenseDescription, source.expenseDescription)
         XCTAssertEqual(duplicate.note, source.note)
