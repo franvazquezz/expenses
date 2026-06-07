@@ -4,7 +4,7 @@ App nativa para macOS hecha con SwiftUI y SwiftData para registrar y analizar ga
 
 ## Estado actual
 
-Fase 1 en progreso:
+Fases 1 a 5 en progreso:
 
 - App macOS nativa.
 - SwiftUI para UI.
@@ -19,6 +19,12 @@ Fase 1 en progreso:
 - Moneda principal configurable.
 - Cotizaciones manuales locales.
 - Conversión guardada por gasto: monto original, moneda original, monto convertido y moneda base.
+- Registro de ingresos por sueldo, freelance, ventas y otros.
+- Dashboard con ingresos, gastos y balance mensual.
+- Presupuestos mensuales por categoria.
+- Visualizacion de consumido, restante, porcentaje y barra de progreso.
+- Gastos recurrentes semanales, mensuales y anuales.
+- Generacion automatica local de gastos vencidos.
 
 ## Abrir en Xcode
 

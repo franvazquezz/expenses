@@ -42,4 +42,20 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(categories.first?.currency, "ARS")
         XCTAssertEqual(categories.first?.total, 172040)
     }
+
+    func testBalanceSubtractsExpensesFromIncomesByBaseCurrency() {
+        let viewModel = DashboardViewModel()
+        let today = Date()
+        let incomes = [
+            Income(amount: 1000, currency: "USD", convertedAmount: 1400000, baseCurrency: "ARS", date: today, category: "Sueldo")
+        ]
+        let expenses = [
+            Expense(amount: 100, currency: "USD", convertedAmount: 140000, baseCurrency: "ARS", date: today, category: "Comida"),
+            Expense(amount: 50000, currency: "ARS", convertedAmount: 50000, baseCurrency: "ARS", date: today, category: "Servicios")
+        ]
+
+        let balance = viewModel.balanceThisMonth(expenses: expenses, incomes: incomes)
+
+        XCTAssertEqual(balance.first { $0.currency == "ARS" }?.total, 1210000)
+    }
 }

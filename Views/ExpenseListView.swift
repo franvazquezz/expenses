@@ -15,15 +15,21 @@ struct ExpenseListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            PageHeader(
+                title: "Gastos",
+                subtitle: "\(filteredExpenses.count) registros para el filtro actual",
+                systemImage: "arrow.up.circle.fill",
+                actionTitle: "Agregar",
+                actionSystemImage: "plus.circle.fill"
+            ) {
+                showingAddExpense = true
+            }
+            .padding([.horizontal, .top])
+
             filters
 
             if filteredExpenses.isEmpty {
-                ContentUnavailableView(
-                    "Sin gastos",
-                    systemImage: "tray",
-                    description: Text("Agrega un gasto o cambia los filtros.")
-                )
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                EmptyState(title: "Sin gastos", systemImage: "tray", message: "Agrega un gasto o cambia los filtros.")
             } else {
                 expenseTable
             }
@@ -47,7 +53,7 @@ struct ExpenseListView: View {
     }
 
     private var filters: some View {
-        HStack(spacing: 12) {
+        FilterBar {
             Picker("Mes", selection: $viewModel.selectedMonth) {
                 ForEach(MonthFilter.recentMonths, id: \.self) { month in
                     Text(month.title).tag(month)
@@ -69,9 +75,7 @@ struct ExpenseListView: View {
             } label: {
                 Label("Agregar", systemImage: "plus.circle.fill")
             }
-            .buttonStyle(.borderedProminent)
         }
-        .padding()
     }
 
     private var expenseTable: some View {
@@ -92,7 +96,7 @@ struct ExpenseListView: View {
             }
 
             TableColumn("Categoria") { expense in
-                Text(expense.category)
+                StatusPill(title: expense.category, systemImage: "tag", color: AppTheme.expenseColor)
             }
 
             TableColumn("Monto") { expense in

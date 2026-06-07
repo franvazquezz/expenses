@@ -13,7 +13,17 @@ struct CurrencySettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading, spacing: AppTheme.pageSpacing) {
+                PageHeader(
+                    title: "Monedas",
+                    subtitle: "Moneda principal y cotizaciones manuales locales",
+                    systemImage: "dollarsign.circle.fill",
+                    actionTitle: "Agregar moneda",
+                    actionSystemImage: "plus.circle.fill"
+                ) {
+                    showingAddCurrency = true
+                }
+
                 currenciesSection
                 ratesSection
             }
@@ -64,11 +74,8 @@ struct CurrencySettingsView: View {
     }
 
     private var currenciesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        AppPanel(title: "Monedas", systemImage: "dollarsign.circle") {
             HStack {
-                Label("Monedas", systemImage: "dollarsign.circle")
-                    .font(.headline)
-
                 Spacer()
 
                 Button {
@@ -82,9 +89,9 @@ struct CurrencySettingsView: View {
                 TableColumn("Codigo") { currency in
                     HStack {
                         Text(currency.code)
+                            .fontWeight(.medium)
                         if currency.isDefault {
-                            Image(systemName: "star.fill")
-                                .foregroundStyle(.yellow)
+                            StatusPill(title: "Principal", systemImage: "star.fill", color: .yellow)
                         }
                     }
                 }
@@ -98,8 +105,11 @@ struct CurrencySettingsView: View {
                 }
 
                 TableColumn("Estado") { currency in
-                    Text(currency.isActive ? "Activa" : "Inactiva")
-                        .foregroundStyle(currency.isActive ? .primary : .secondary)
+                    StatusPill(
+                        title: currency.isActive ? "Activa" : "Inactiva",
+                        systemImage: currency.isActive ? "checkmark.circle" : "pause.circle",
+                        color: currency.isActive ? AppTheme.incomeColor : AppTheme.neutralColor
+                    )
                 }
 
                 TableColumn("") { currency in
@@ -138,11 +148,8 @@ struct CurrencySettingsView: View {
     }
 
     private var ratesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        AppPanel(title: "Cotizaciones manuales", systemImage: "arrow.left.arrow.right") {
             HStack {
-                Label("Cotizaciones manuales", systemImage: "arrow.left.arrow.right")
-                    .font(.headline)
-
                 Spacer()
 
                 Button {

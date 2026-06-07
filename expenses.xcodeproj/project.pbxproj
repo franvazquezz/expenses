@@ -21,9 +21,25 @@
 		1000000000000000000000A3 /* CurrencyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B3 /* CurrencyViewModel.swift */; };
 		1000000000000000000000A4 /* ExchangeRateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B4 /* ExchangeRateViewModel.swift */; };
 		1000000000000000000000A5 /* CurrencySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B5 /* CurrencySettingsView.swift */; };
+		1000000000000000000000A6 /* Income.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B6 /* Income.swift */; };
+		1000000000000000000000A7 /* IncomeFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B7 /* IncomeFormViewModel.swift */; };
+		1000000000000000000000A8 /* IncomeListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B8 /* IncomeListViewModel.swift */; };
+		1000000000000000000000A9 /* AddIncomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000B9 /* AddIncomeView.swift */; };
+		1000000000000000000000AA /* EditIncomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BA /* EditIncomeView.swift */; };
+		1000000000000000000000AB /* IncomeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BB /* IncomeListView.swift */; };
+		1000000000000000000000AC /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BC /* Budget.swift */; };
+		1000000000000000000000AD /* BudgetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BD /* BudgetViewModel.swift */; };
+		1000000000000000000000AE /* BudgetListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BE /* BudgetListView.swift */; };
+		1000000000000000000000AF /* DesignSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000BF /* DesignSystem.swift */; };
+		1000000000000000000000C0 /* RecurringExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D0 /* RecurringExpense.swift */; };
+		1000000000000000000000C1 /* RecurringExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D1 /* RecurringExpenseViewModel.swift */; };
+		1000000000000000000000C2 /* RecurringExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D2 /* RecurringExpenseListView.swift */; };
 		200000000000000000000001 /* ExpenseFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* ExpenseFormViewModelTests.swift */; };
 		200000000000000000000002 /* ExpenseListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ExpenseListViewModelTests.swift */; };
 		200000000000000000000003 /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* DashboardViewModelTests.swift */; };
+		200000000000000000000004 /* IncomeFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000014 /* IncomeFormViewModelTests.swift */; };
+		200000000000000000000005 /* BudgetViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* BudgetViewModelTests.swift */; };
+		200000000000000000000006 /* RecurringExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* RecurringExpenseViewModelTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,14 +68,27 @@
 		1000000000000000000000B3 /* CurrencyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyViewModel.swift; sourceTree = "<group>"; };
 		1000000000000000000000B4 /* ExchangeRateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExchangeRateViewModel.swift; sourceTree = "<group>"; };
 		1000000000000000000000B5 /* CurrencySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySettingsView.swift; sourceTree = "<group>"; };
+		1000000000000000000000B6 /* Income.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Income.swift; sourceTree = "<group>"; };
+		1000000000000000000000B7 /* IncomeFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeFormViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000B8 /* IncomeListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeListViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000B9 /* AddIncomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIncomeView.swift; sourceTree = "<group>"; };
+		1000000000000000000000BA /* EditIncomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditIncomeView.swift; sourceTree = "<group>"; };
+		1000000000000000000000BB /* IncomeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeListView.swift; sourceTree = "<group>"; };
+		1000000000000000000000BC /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
+		1000000000000000000000BD /* BudgetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000BE /* BudgetListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetListView.swift; sourceTree = "<group>"; };
+		1000000000000000000000BF /* DesignSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignSystem.swift; sourceTree = "<group>"; };
+		1000000000000000000000D0 /* RecurringExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpense.swift; sourceTree = "<group>"; };
+		1000000000000000000000D1 /* RecurringExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000D2 /* RecurringExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseListView.swift; sourceTree = "<group>"; };
 		200000000000000000000010 /* expensesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = expensesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000011 /* ExpenseFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000012 /* ExpenseListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000013 /* DashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000014 /* IncomeFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeFormViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000015 /* BudgetViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000016 /* RecurringExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseViewModelTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		100000000000000000000020 /* Frameworks */ = {
@@ -103,8 +132,11 @@
 			isa = PBXGroup;
 			children = (
 				100000000000000000000012 /* Expense.swift */,
+				1000000000000000000000B6 /* Income.swift */,
 				1000000000000000000000B1 /* Currency.swift */,
 				1000000000000000000000B2 /* ExchangeRate.swift */,
+				1000000000000000000000BC /* Budget.swift */,
+				1000000000000000000000D0 /* RecurringExpense.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -113,10 +145,16 @@
 			isa = PBXGroup;
 			children = (
 				100000000000000000000013 /* DashboardView.swift */,
+				1000000000000000000000BF /* DesignSystem.swift */,
 				100000000000000000000014 /* ExpenseListView.swift */,
 				100000000000000000000015 /* AddExpenseView.swift */,
 				100000000000000000000016 /* EditExpenseView.swift */,
+				1000000000000000000000BB /* IncomeListView.swift */,
+				1000000000000000000000B9 /* AddIncomeView.swift */,
+				1000000000000000000000BA /* EditIncomeView.swift */,
 				1000000000000000000000B5 /* CurrencySettingsView.swift */,
+				1000000000000000000000BE /* BudgetListView.swift */,
+				1000000000000000000000D2 /* RecurringExpenseListView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -136,8 +174,12 @@
 				100000000000000000000017 /* ExpenseFormViewModel.swift */,
 				100000000000000000000018 /* ExpenseListViewModel.swift */,
 				100000000000000000000019 /* DashboardViewModel.swift */,
+				1000000000000000000000B7 /* IncomeFormViewModel.swift */,
+				1000000000000000000000B8 /* IncomeListViewModel.swift */,
 				1000000000000000000000B3 /* CurrencyViewModel.swift */,
 				1000000000000000000000B4 /* ExchangeRateViewModel.swift */,
+				1000000000000000000000BD /* BudgetViewModel.swift */,
+				1000000000000000000000D1 /* RecurringExpenseViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -148,6 +190,9 @@
 				200000000000000000000011 /* ExpenseFormViewModelTests.swift */,
 				200000000000000000000012 /* ExpenseListViewModelTests.swift */,
 				200000000000000000000013 /* DashboardViewModelTests.swift */,
+				200000000000000000000014 /* IncomeFormViewModelTests.swift */,
+				200000000000000000000015 /* BudgetViewModelTests.swift */,
+				200000000000000000000016 /* RecurringExpenseViewModelTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -198,7 +243,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2605;
-				LastUpgradeCheck = 2605;
+				LastUpgradeCheck = 2650;
 				TargetAttributes = {
 					100000000000000000000040 = {
 						CreatedOnToolsVersion = 26.5;
@@ -266,6 +311,19 @@
 				1000000000000000000000A3 /* CurrencyViewModel.swift in Sources */,
 				1000000000000000000000A4 /* ExchangeRateViewModel.swift in Sources */,
 				1000000000000000000000A5 /* CurrencySettingsView.swift in Sources */,
+				1000000000000000000000A6 /* Income.swift in Sources */,
+				1000000000000000000000A7 /* IncomeFormViewModel.swift in Sources */,
+				1000000000000000000000A8 /* IncomeListViewModel.swift in Sources */,
+				1000000000000000000000A9 /* AddIncomeView.swift in Sources */,
+				1000000000000000000000AA /* EditIncomeView.swift in Sources */,
+				1000000000000000000000AB /* IncomeListView.swift in Sources */,
+				1000000000000000000000AC /* Budget.swift in Sources */,
+				1000000000000000000000AD /* BudgetViewModel.swift in Sources */,
+				1000000000000000000000AE /* BudgetListView.swift in Sources */,
+				1000000000000000000000AF /* DesignSystem.swift in Sources */,
+				1000000000000000000000C0 /* RecurringExpense.swift in Sources */,
+				1000000000000000000000C1 /* RecurringExpenseViewModel.swift in Sources */,
+				1000000000000000000000C2 /* RecurringExpenseListView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -276,6 +334,9 @@
 				200000000000000000000001 /* ExpenseFormViewModelTests.swift in Sources */,
 				200000000000000000000002 /* ExpenseListViewModelTests.swift in Sources */,
 				200000000000000000000003 /* DashboardViewModelTests.swift in Sources */,
+				200000000000000000000004 /* IncomeFormViewModelTests.swift in Sources */,
+				200000000000000000000005 /* BudgetViewModelTests.swift in Sources */,
+				200000000000000000000006 /* RecurringExpenseViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,6 +355,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -323,6 +385,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -346,6 +409,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -355,6 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -384,6 +449,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -400,6 +466,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -412,6 +479,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -438,6 +506,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -463,6 +532,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -486,6 +556,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

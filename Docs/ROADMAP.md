@@ -49,13 +49,110 @@
 - [x] Dashboard usa montos convertidos para estadisticas.
 - [x] Tests de conversion manual.
 
+## Fase 3 - Ingresos
+
+- [x] Modelo `Income`.
+- [x] Registrar ingresos por Sueldo.
+- [x] Registrar ingresos por Freelance.
+- [x] Registrar ingresos por Ventas.
+- [x] Registrar ingresos por Otros.
+- [x] Crear ingreso.
+- [x] Editar ingreso.
+- [x] Eliminar ingreso.
+- [x] Conversión multi-moneda para ingresos.
+- [x] Dashboard muestra ingresos.
+- [x] Dashboard muestra gastos.
+- [x] Dashboard muestra balance.
+- [x] Tests de ingresos y balance.
+
+## Fase 4 - Presupuestos
+
+- [x] Modelo `Budget`.
+- [x] Presupuestos mensuales por categoria.
+- [x] Presupuestos iniciales: Comida, Transporte y Ocio.
+- [x] Mostrar consumido.
+- [x] Mostrar restante.
+- [x] Mostrar porcentaje.
+- [x] Mostrar barra de progreso.
+- [x] Crear presupuesto.
+- [x] Editar presupuesto.
+- [x] Activar y desactivar presupuesto.
+- [x] Dashboard con avance de presupuestos del mes.
+- [x] Tests de calculo de presupuesto.
+
+## Fase 5 - Gastos recurrentes
+
+- [x] Modelo `RecurringExpense`.
+- [x] Crear gasto recurrente.
+- [x] Editar gasto recurrente.
+- [x] Eliminar gasto recurrente.
+- [x] Activar y desactivar gasto recurrente.
+- [x] Periodicidad semanal.
+- [x] Periodicidad mensual.
+- [x] Periodicidad anual.
+- [x] Generacion automatica al abrir la app.
+- [x] Generacion manual de pendientes.
+- [x] Tests de generacion recurrente.
+
+## Fase 6 - Graficos
+
+- [ ] Dashboard visual con Charts de Apple.
+- [ ] Torta por categoria.
+- [ ] Barras por mes.
+- [ ] Evolucion anual.
+- [ ] Evolucion por moneda.
+
+## Fase 7 - Cuentas
+
+- [ ] Modelo `Account`.
+- [ ] Cuentas como Efectivo, Mercado Pago, Naranja X, Brubank, Galicia y tarjetas.
+- [ ] Cada gasto impacta en una cuenta.
+- [ ] Filtros y dashboard por cuenta.
+
+## Fase 8 - Importacion y exportacion
+
+- [ ] Exportar CSV.
+- [ ] Exportar Excel.
+- [ ] Exportar JSON.
+- [ ] Importar CSV de gastos.
+- [ ] Importar CSV de bancos.
+
+## Fase 9 - Busquedas
+
+- [ ] Buscar por texto.
+- [ ] Buscar por categoria.
+- [ ] Buscar por fecha.
+- [ ] Buscar por moneda.
+- [ ] Buscar por cuenta.
+- [ ] Buscar por metodo de pago.
+
+## Fase 10 - Backup
+
+- [ ] Exportar base completa local.
+- [ ] Sincronizacion iCloud con CloudKit + SwiftData.
+- [ ] Sincronizacion entre MacBook, iMac y Mac Mini.
+
+## Fase 11 - Funciones avanzadas
+
+- [ ] Objetivos de ahorro.
+- [ ] Comparacion mensual.
+- [ ] Alertas de presupuesto superado.
+- [ ] Alertas de gasto inusual.
+- [ ] Recordatorio de carga diaria.
+
+## Fase 12 - Patrimonio personal
+
+- [ ] Cuentas bancarias.
+- [ ] Efectivo.
+- [ ] USDC.
+- [ ] Binance.
+- [ ] Vesseo.
+- [ ] Inversiones.
+- [ ] Dashboard de patrimonio total por moneda.
+- [ ] Equivalente total en moneda base.
+
 ## Proximas fases posibles
 
-- Presupuestos mensuales por categoria.
-- Busqueda por texto, etiquetas y metodo de pago.
-- Exportacion CSV.
-- Importacion CSV.
-- Graficos por mes y categoria.
 - Preferencias de moneda principal.
 - Conversion de moneda si se define fuente de tipo de cambio.
 - Conversion automatica con API: ExchangeRate API, Frankfurter u Open Exchange Rates.
