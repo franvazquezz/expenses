@@ -44,6 +44,11 @@ struct PaymentMethodTotal: Identifiable {
     }
 }
 
+private struct MonthlyMovementKey: Hashable {
+    let monthStart: Date
+    let currency: String
+}
+
 final class DashboardViewModel {
     private let calendar = Calendar.current
 
@@ -121,29 +126,24 @@ final class DashboardViewModel {
         let confirmedExpenses = expenses.filter { $0.isConfirmed }
         let confirmedIncomes = incomes.filter { $0.isConfirmed }
         let currencies = Set(confirmedExpenses.map(\.baseCurrency)).union(confirmedIncomes.map(\.baseCurrency))
+        let expenseTotals = totalsByMonthAndCurrency(
+            expenses: confirmedExpenses,
+            allowedMonths: monthSet
+        )
+        let incomeTotals = totalsByMonthAndCurrency(
+            incomes: confirmedIncomes,
+            allowedMonths: monthSet
+        )
 
         return months.flatMap { monthStart in
             currencies.map { currency in
-                let expenseTotal = confirmedExpenses
-                    .filter {
-                        monthSet.contains(monthStart) &&
-                        monthStartForDate($0.date) == monthStart &&
-                        $0.baseCurrency == currency
-                    }
-                    .reduce(0) { $0 + $1.convertedAmount }
-                let incomeTotal = confirmedIncomes
-                    .filter {
-                        monthSet.contains(monthStart) &&
-                        monthStartForDate($0.date) == monthStart &&
-                        $0.baseCurrency == currency
-                    }
-                    .reduce(0) { $0 + $1.convertedAmount }
+                let key = MonthlyMovementKey(monthStart: monthStart, currency: currency)
 
                 return MonthlyMovementTotal(
                     monthStart: monthStart,
                     currency: currency,
-                    expenseTotal: expenseTotal,
-                    incomeTotal: incomeTotal
+                    expenseTotal: expenseTotals[key] ?? 0,
+                    incomeTotal: incomeTotals[key] ?? 0
                 )
             }
         }
@@ -188,6 +188,28 @@ final class DashboardViewModel {
                 MoneyTotal(currency: currency, total: values.reduce(0) { $0 + $1.convertedAmount })
             }
             .sorted { $0.currency < $1.currency }
+    }
+
+    private func totalsByMonthAndCurrency(expenses: [Expense], allowedMonths: Set<Date>) -> [MonthlyMovementKey: Double] {
+        expenses.reduce(into: [:]) { totals, expense in
+            let monthStart = monthStartForDate(expense.date)
+            guard allowedMonths.contains(monthStart) else {
+                return
+            }
+
+            totals[MonthlyMovementKey(monthStart: monthStart, currency: expense.baseCurrency), default: 0] += expense.convertedAmount
+        }
+    }
+
+    private func totalsByMonthAndCurrency(incomes: [Income], allowedMonths: Set<Date>) -> [MonthlyMovementKey: Double] {
+        incomes.reduce(into: [:]) { totals, income in
+            let monthStart = monthStartForDate(income.date)
+            guard allowedMonths.contains(monthStart) else {
+                return
+            }
+
+            totals[MonthlyMovementKey(monthStart: monthStart, currency: income.baseCurrency), default: 0] += income.convertedAmount
+        }
     }
 
     private func recentMonthStarts(count: Int) -> [Date] {

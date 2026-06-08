@@ -24,11 +24,13 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - CloudKit queda evaluado y preparado a nivel de requisitos, pero no se activa sin Apple Developer Team, Bundle ID estable y contenedor iCloud definido.
 - La estrategia de conflictos para sincronizacion sera ultima edicion persistida por registro; los movimientos recurrentes pendientes evitan impacto automatico antes de revision.
 - GitHub CLI queda habilitado localmente en `.tools/gh-cli` para esta copia de trabajo; la autenticacion esta configurada en Keychain para la cuenta `franvazquezz`.
+- El repositorio GitHub queda normalizado con `origin` como remote canonico, `main` como rama principal y `development` como rama de desarrollo en reemplazo de `master`.
 - El patrimonio se modela como cuentas manuales de tipo activo o pasivo. Los saldos se agrupan por moneda y el patrimonio neto se calcula por moneda sin consolidar divisas distintas.
 - Los gastos e ingresos pueden asociarse a una cuenta de la misma moneda original. Los gastos confirmados restan saldo y los ingresos confirmados suman saldo; al editar, eliminar o cambiar estado se revierte/aplica el impacto correspondiente.
 - El equivalente total de patrimonio en moneda principal usa solamente cotizaciones manuales disponibles; las monedas sin cotizacion se informan y no se suman.
 - Los backups JSON incluyen cuentas de patrimonio y mantienen compatibilidad al restaurar backups previos sin cuentas.
 - CloudKit queda pospuesto hasta cerrar patrimonio y una ronda de calidad.
+- La Fase 8 de calidad comienza por optimizar y medir agregados del dashboard antes de incorporar UI tests y migraciones SwiftData reales.
 
 ## Funcionalidades implementadas
 
@@ -92,6 +94,9 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - [x] Tests unitarios para impacto de movimientos en cuentas.
 - [x] Tests unitarios para resumen de movimientos por cuenta.
 - [x] Tests unitarios para equivalente de patrimonio en moneda principal.
+- [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto de datos.
+- [x] Test unitario de volumen alto para agregados mensuales del dashboard.
+- [x] Test de compatibilidad para backups previos sin cuentas de patrimonio.
 - [x] Documentacion inicial en `Docs/`.
 
 ## Funcionalidades pendientes
@@ -99,13 +104,13 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - [ ] UI tests para flujos principales.
 - [ ] Tests de migracion SwiftData.
 - [ ] Revision de accesibilidad.
-- [ ] Revision de rendimiento con volumen alto de datos.
+- [ ] Revision general de rendimiento con volumen alto de datos.
 - [ ] Activar CloudKit real con entitlements y contenedor iCloud.
 - [ ] Sincronizacion entre Macs.
 
 ## Proximos pasos
 
-1. Completar calidad: UI tests, migraciones SwiftData, accesibilidad y rendimiento.
+1. Continuar calidad: UI tests, migraciones SwiftData, accesibilidad y revision general de rendimiento.
 2. Retomar CloudKit: Apple Developer Team, Bundle ID final y contenedor iCloud.
 3. Activar CloudKit real y validar sincronizacion entre Macs.
 
@@ -123,3 +128,4 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - Antes de sumar conversion de moneda, definir fuente de tipo de cambio y reglas de actualizacion.
 - Mantener sincronizados `README.md`, `Docs/ROADMAP.md`, `ROADMAP.md` y este archivo cuando cambie el estado del proyecto.
 - Para usar GitHub CLI desde esta sesion sin instalacion global, ejecutar `.tools/gh-cli` o agregar `.tools` al `PATH`.
+- La rama remota `master` fue eliminada despues de publicar su contenido como `development`; `main` y `development` apuntan al estado completo actual de la app.

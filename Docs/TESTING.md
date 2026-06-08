@@ -19,6 +19,8 @@ Para esta fase, la logica importante esta en los view models y se puede probar c
 - Calculo de activos, pasivos y patrimonio neto por moneda.
 - Impacto de gastos e ingresos confirmados sobre saldos de cuentas.
 - Equivalente de patrimonio en moneda principal con cotizaciones manuales.
+- Compatibilidad de backups previos sin cuentas.
+- Agregados mensuales del dashboard con volumen alto de movimientos.
 
 ## Ejecutar tests
 
@@ -96,3 +98,13 @@ La Fase de patrimonio agrega tests para:
 - Ignorar movimientos pendientes o con moneda incompatible.
 - Calcular resumen por cuenta con ingresos, gastos y flujo neto.
 - Convertir patrimonio a moneda principal y reportar monedas sin cotizacion.
+
+## Calidad
+
+La Fase 8 agrega tests para:
+
+- Decodificar backups generados antes de incorporar cuentas de patrimonio.
+- Validar agregados mensuales del dashboard con miles de gastos e ingresos.
+- Medir performance de `monthlyMovementTotals(expenses:incomes:monthsBack:)` como base para futuras revisiones de rendimiento.
+
+Quedan pendientes UI tests para flujos principales, tests de migracion SwiftData, revision de accesibilidad y revision general de rendimiento.

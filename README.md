@@ -4,7 +4,7 @@ App nativa para macOS hecha con SwiftUI y SwiftData para registrar y analizar ga
 
 ## Estado actual
 
-Fases 1 a 7 en progreso:
+Fases 1 a 8 en progreso:
 
 - App macOS nativa.
 - SwiftUI para UI.
@@ -41,6 +41,7 @@ Fases 1 a 7 en progreso:
 - Impacto automatico de movimientos confirmados sobre saldos de cuentas.
 - Dashboard analitico por cuenta con ingresos, gastos y flujo neto.
 - Equivalente total de patrimonio en moneda principal usando cotizaciones manuales.
+- Inicio de Fase 8 de calidad con optimizacion de agregados mensuales, test de volumen alto y compatibilidad de backups previos sin cuentas.
 
 ## Abrir en Xcode
 

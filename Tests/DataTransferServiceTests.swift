@@ -98,4 +98,25 @@ final class DataTransferServiceTests: XCTestCase {
         XCTAssertEqual(decoded.incomes.first?.accountID, accountID)
         XCTAssertEqual(decoded.accounts.first?.id, accountID)
     }
+
+    func testDecodingBackupWithoutAccountsKeepsBackwardCompatibility() throws {
+        let backup = """
+        {
+          "version": 1,
+          "createdAt": "2026-06-08T12:00:00Z",
+          "expenses": [],
+          "incomes": [],
+          "currencies": [],
+          "exchangeRates": [],
+          "budgets": [],
+          "recurringExpenses": [],
+          "recurringIncomes": []
+        }
+        """
+
+        let decoded = try DataTransferService.decodeBackup(backup)
+
+        XCTAssertEqual(decoded.version, 1)
+        XCTAssertTrue(decoded.accounts.isEmpty)
+    }
 }

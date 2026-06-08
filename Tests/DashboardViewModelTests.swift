@@ -118,4 +118,70 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertEqual(totals.first { $0.paymentMethod == "Tarjeta" }?.total, 28000)
         XCTAssertEqual(totals.first { $0.paymentMethod == "Tarjeta" }?.currency, "ARS")
     }
+
+    func testMonthlyMovementTotalsHandleLargeDataSet() {
+        let viewModel = DashboardViewModel()
+        let calendar = Calendar.current
+        let today = Date()
+        let expenses = (0..<12_000).map { index in
+            Expense(
+                amount: 10,
+                currency: "ARS",
+                convertedAmount: 10,
+                baseCurrency: "ARS",
+                date: calendar.date(byAdding: .day, value: -index % 360, to: today)!,
+                category: "Comida",
+                isConfirmed: index % 5 != 0
+            )
+        }
+        let incomes = (0..<2_400).map { index in
+            Income(
+                amount: 100,
+                currency: "ARS",
+                convertedAmount: 100,
+                baseCurrency: "ARS",
+                date: calendar.date(byAdding: .day, value: -index % 360, to: today)!,
+                category: "Sueldo",
+                isConfirmed: index % 7 != 0
+            )
+        }
+
+        let totals = viewModel.monthlyMovementTotals(expenses: expenses, incomes: incomes, monthsBack: 12)
+
+        XCTAssertFalse(totals.isEmpty)
+        XCTAssertLessThanOrEqual(totals.count, 12)
+        XCTAssertTrue(totals.allSatisfy { $0.currency == "ARS" })
+    }
+
+    func testMonthlyMovementTotalsPerformanceWithLargeDataSet() {
+        let viewModel = DashboardViewModel()
+        let calendar = Calendar.current
+        let today = Date()
+        let expenses = (0..<12_000).map { index in
+            Expense(
+                amount: 10,
+                currency: "ARS",
+                convertedAmount: 10,
+                baseCurrency: "ARS",
+                date: calendar.date(byAdding: .day, value: -index % 360, to: today)!,
+                category: index % 2 == 0 ? "Comida" : "Servicios",
+                isConfirmed: index % 5 != 0
+            )
+        }
+        let incomes = (0..<2_400).map { index in
+            Income(
+                amount: 100,
+                currency: "ARS",
+                convertedAmount: 100,
+                baseCurrency: "ARS",
+                date: calendar.date(byAdding: .day, value: -index % 360, to: today)!,
+                category: "Sueldo",
+                isConfirmed: index % 7 != 0
+            )
+        }
+
+        measure {
+            _ = viewModel.monthlyMovementTotals(expenses: expenses, incomes: incomes, monthsBack: 12)
+        }
+    }
 }

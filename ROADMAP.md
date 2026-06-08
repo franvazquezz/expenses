@@ -76,7 +76,10 @@
 
 ## Fase 8 - Calidad
 
+- [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto.
+- [x] Test de volumen alto para dashboard mensual.
+- [x] Test de compatibilidad de backup previo sin cuentas.
 - [ ] UI tests para flujos principales.
 - [ ] Tests de migracion SwiftData.
 - [ ] Revision de accesibilidad.
-- [ ] Revision de rendimiento con volumen alto de gastos.
+- [ ] Revision general de rendimiento con volumen alto de gastos.

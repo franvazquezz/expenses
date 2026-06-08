@@ -167,9 +167,18 @@
 - [x] Dashboard de patrimonio total por moneda.
 - [x] Equivalente total en moneda base.
 
+## Fase 13 - Calidad
+
+- [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto.
+- [x] Test de volumen alto para dashboard mensual.
+- [x] Test de compatibilidad de backup previo sin cuentas.
+- [ ] UI tests para flujos principales.
+- [ ] Tests de migracion SwiftData.
+- [ ] Revision de accesibilidad.
+- [ ] Revision general de rendimiento con volumen alto de datos.
+
 ## Proximas fases posibles
 
 - Preferencias de moneda principal.
 - Conversion de moneda si se define fuente de tipo de cambio.
 - Conversion automatica con API: ExchangeRate API, Frankfurter u Open Exchange Rates.
-- UI tests para flujos completos.
