@@ -13,6 +13,7 @@ final class ExpenseFormViewModelTests: XCTestCase {
         viewModel.note = "  menu ejecutivo  "
         viewModel.paymentMethod = "Efectivo"
         viewModel.tagsText = " trabajo, comida,  "
+        viewModel.accountID = UUID()
 
         let expense = viewModel.makeExpense()
 
@@ -26,6 +27,7 @@ final class ExpenseFormViewModelTests: XCTestCase {
         XCTAssertEqual(expense?.note, "menu ejecutivo")
         XCTAssertEqual(expense?.paymentMethod, "Efectivo")
         XCTAssertEqual(expense?.tags, ["trabajo", "comida"])
+        XCTAssertEqual(expense?.accountID, viewModel.accountID)
     }
 
     func testRejectsZeroOrInvalidAmounts() {

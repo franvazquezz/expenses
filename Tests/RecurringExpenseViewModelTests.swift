@@ -45,6 +45,7 @@ final class RecurringExpenseViewModelTests: XCTestCase {
         XCTAssertEqual(result.createdExpenses.count, 3)
         XCTAssertEqual(result.createdExpenses.first?.expenseDescription, "Netflix")
         XCTAssertEqual(result.createdExpenses.first?.convertedAmount, 140000)
+        XCTAssertEqual(result.createdExpenses.first?.isConfirmed, false)
         XCTAssertEqual(result.nextRunDate, DateComponents(calendar: calendar, year: 2026, month: 4, day: 1).date)
     }
 

@@ -13,6 +13,8 @@ final class Expense {
     var note: String
     var paymentMethod: String
     var tags: [String]
+    var isConfirmed: Bool
+    var accountID: UUID?
 
     var amount: Double {
         get { originalAmount }
@@ -37,7 +39,9 @@ final class Expense {
         expenseDescription: String = "",
         note: String = "",
         paymentMethod: String = "",
-        tags: [String] = []
+        tags: [String] = [],
+        isConfirmed: Bool = true,
+        accountID: UUID? = nil
     ) {
         self.originalAmount = amount
         self.originalCurrency = currency
@@ -49,5 +53,7 @@ final class Expense {
         self.note = note
         self.paymentMethod = paymentMethod
         self.tags = tags
+        self.isConfirmed = isConfirmed
+        self.accountID = accountID
     }
 }

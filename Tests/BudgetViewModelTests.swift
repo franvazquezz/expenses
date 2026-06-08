@@ -72,4 +72,28 @@ final class BudgetViewModelTests: XCTestCase {
         XCTAssertTrue(activeOnly.isEmpty)
         XCTAssertEqual(includingInactive.count, 1)
     }
+
+    func testProgressIgnoresPendingExpenses() {
+        let date = Date()
+        let budget = Budget(category: "Comida", amount: 300000, currency: "ARS", monthStart: date)
+        let pendingExpense = Expense(
+            amount: 100000,
+            currency: "ARS",
+            convertedAmount: 100000,
+            baseCurrency: "ARS",
+            date: date,
+            category: "Comida",
+            isConfirmed: false
+        )
+
+        let progress = BudgetViewModel.progress(
+            for: [budget],
+            expenses: [pendingExpense],
+            month: MonthFilter(containing: date)
+        )
+
+        XCTAssertEqual(progress.first?.consumed, 0)
+        XCTAssertEqual(progress.first?.remaining, 300000)
+        XCTAssertEqual(progress.first?.percentage, 0)
+    }
 }

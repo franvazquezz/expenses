@@ -25,51 +25,54 @@
 
 ## Fase 2 - Configuracion y control
 
-- [ ] Preferencias de moneda principal.
-- [ ] Gestion de monedas activas.
-- [ ] Busqueda por texto.
-- [ ] Filtros por categoria, etiquetas, moneda y metodo de pago.
-- [ ] Presupuestos mensuales por categoria.
-- [ ] Alertas visuales de presupuesto.
+- [x] Preferencias de moneda principal.
+- [x] Gestion de monedas activas.
+- [x] Busqueda por texto.
+- [x] Filtros por categoria, etiquetas, moneda y metodo de pago.
+- [x] Presupuestos mensuales por categoria.
+- [x] Alertas visuales de presupuesto.
 
 ## Fase 3 - Analisis
 
-- [ ] Graficos por mes.
-- [ ] Graficos por categoria.
-- [ ] Comparacion mensual.
-- [ ] Tendencias de gasto.
-- [ ] Resumen por metodo de pago.
+- [x] Graficos por mes.
+- [x] Graficos por categoria.
+- [x] Comparacion mensual.
+- [x] Tendencias de gasto.
+- [x] Resumen por metodo de pago.
 
 ## Fase 4 - Datos
 
-- [ ] Exportacion CSV.
-- [ ] Importacion CSV.
-- [ ] Validacion de importaciones.
-- [ ] Backup local.
-- [ ] Restauracion desde backup local.
+- [x] Exportacion CSV.
+- [x] Importacion CSV.
+- [x] Validacion de importaciones.
+- [x] Backup local.
+- [x] Restauracion desde backup local.
 
 ## Fase 5 - Ingresos y patrimonio
 
-- [ ] Registrar ingresos.
-- [ ] Categorizar ingresos.
-- [ ] Dashboard de flujo mensual.
-- [ ] Registrar cuentas o activos.
-- [ ] Registrar pasivos.
-- [ ] Calcular patrimonio neto.
+- [x] Registrar ingresos.
+- [x] Categorizar ingresos.
+- [x] Dashboard de flujo mensual.
+- [x] Registrar cuentas o activos.
+- [x] Registrar pasivos.
+- [x] Calcular patrimonio neto.
+- [x] Impactar gastos e ingresos en cuentas.
+- [x] Filtrar movimientos por cuenta.
+- [x] Calcular equivalente total en moneda base con cotizaciones manuales.
 
 ## Fase 6 - Recurrencia y automatizacion
 
-- [ ] Gastos recurrentes.
-- [ ] Ingresos recurrentes.
-- [ ] Generacion automatica de movimientos esperados.
-- [ ] Marcado de movimientos como confirmados.
+- [x] Gastos recurrentes.
+- [x] Ingresos recurrentes.
+- [x] Generacion automatica de movimientos esperados.
+- [x] Marcado de movimientos como confirmados.
 
 ## Fase 7 - Sincronizacion
 
-- [ ] Evaluar CloudKit.
-- [ ] Definir estrategia de conflictos.
+- [x] Evaluar CloudKit.
+- [x] Definir estrategia de conflictos.
 - [ ] Sincronizacion entre Macs.
-- [ ] Preparar base para iPhone si se decide expandir plataforma.
+- [x] Preparar base para iPhone si se decide expandir plataforma.
 
 ## Fase 8 - Calidad
 

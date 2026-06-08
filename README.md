@@ -4,7 +4,7 @@ App nativa para macOS hecha con SwiftUI y SwiftData para registrar y analizar ga
 
 ## Estado actual
 
-Fases 1 a 5 en progreso:
+Fases 1 a 7 en progreso:
 
 - App macOS nativa.
 - SwiftUI para UI.
@@ -25,6 +25,22 @@ Fases 1 a 5 en progreso:
 - Visualizacion de consumido, restante, porcentaje y barra de progreso.
 - Gastos recurrentes semanales, mensuales y anuales.
 - Generacion automatica local de gastos vencidos.
+- Ingresos recurrentes semanales, mensuales y anuales.
+- Generacion automatica local de ingresos vencidos.
+- Movimientos recurrentes generados como pendientes hasta confirmacion.
+- Dashboard y presupuestos calculados solo con movimientos confirmados.
+- Pantalla de sincronizacion con readiness para CloudKit.
+- Estrategia de sincronizacion documentada en `Docs/CLOUDKIT_SYNC.md`.
+- Busqueda y filtros avanzados en gastos e ingresos.
+- Graficos de analisis mensual, categorias, balance y metodo de pago.
+- Exportacion e importacion CSV de gastos e ingresos.
+- Backup y restauracion local en JSON.
+- Patrimonio con cuentas, activos y pasivos manuales.
+- Calculo de patrimonio neto por moneda.
+- Gastos e ingresos asociados opcionalmente a cuentas.
+- Impacto automatico de movimientos confirmados sobre saldos de cuentas.
+- Dashboard analitico por cuenta con ingresos, gastos y flujo neto.
+- Equivalente total de patrimonio en moneda principal usando cotizaciones manuales.
 
 ## Abrir en Xcode
 
@@ -57,5 +73,6 @@ xcodebuild test -project expenses.xcodeproj -scheme expenses -destination 'platf
 ## Documentacion
 
 - [Arquitectura](Docs/ARCHITECTURE.md)
+- [Sincronizacion CloudKit](Docs/CLOUDKIT_SYNC.md)
 - [Testing](Docs/TESTING.md)
 - [Roadmap](Docs/ROADMAP.md)

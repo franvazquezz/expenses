@@ -4,6 +4,7 @@ import SwiftUI
 struct EditIncomeView: View {
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     let income: Income
 
@@ -39,7 +40,9 @@ struct EditIncomeView: View {
     }
 
     private func updateIncome() {
+        AccountImpactService.revertIncome(income, in: accounts)
         viewModel.update(income)
+        AccountImpactService.applyIncome(income, to: accounts)
         dismiss()
     }
 }

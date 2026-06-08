@@ -174,7 +174,8 @@ final class RecurringExpenseViewModel: ObservableObject {
             expenseDescription: recurringExpense.expenseDescription.isEmpty ? recurringExpense.name : recurringExpense.expenseDescription,
             note: recurringExpense.note,
             paymentMethod: recurringExpense.paymentMethod,
-            tags: Array(Set(recurringExpense.tags + ["recurrente"]))
+            tags: Array(Set(recurringExpense.tags + ["recurrente"])),
+            isConfirmed: false
         )
     }
 

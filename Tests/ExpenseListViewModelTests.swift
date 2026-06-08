@@ -19,6 +19,47 @@ final class ExpenseListViewModelTests: XCTestCase {
         XCTAssertEqual(result.map(\.amount), [10])
     }
 
+    func testFiltersBySearchTagCurrencyPaymentMethodAndStatus() {
+        let today = Date()
+        let accountID = UUID()
+        let matchingExpense = Expense(
+            amount: 10,
+            currency: "USD",
+            convertedAmount: 14000,
+            baseCurrency: "ARS",
+            date: today,
+            category: "Servicios",
+            expenseDescription: "Internet casa",
+            note: "Factura mensual",
+            paymentMethod: "Transferencia",
+            tags: ["hogar"],
+            isConfirmed: false,
+            accountID: accountID
+        )
+        let otherExpense = Expense(
+            amount: 20,
+            currency: "ARS",
+            date: today,
+            category: "Comida",
+            expenseDescription: "Supermercado",
+            paymentMethod: "Efectivo",
+            tags: ["compras"]
+        )
+
+        let viewModel = ExpenseListViewModel()
+        viewModel.selectedMonth = MonthFilter(containing: today)
+        viewModel.searchText = "internet"
+        viewModel.selectedTag = "hogar"
+        viewModel.selectedCurrency = "USD"
+        viewModel.selectedPaymentMethod = "Transferencia"
+        viewModel.selectedStatus = .pending
+        viewModel.selectedAccountID = accountID
+
+        let result = viewModel.filteredExpenses(from: [matchingExpense, otherExpense])
+
+        XCTAssertEqual(result.map(\.expenseDescription), ["Internet casa"])
+    }
+
     func testDuplicatesExpenseWithoutSharingIdentity() {
         let source = Expense(
             amount: 42,
@@ -43,5 +84,6 @@ final class ExpenseListViewModelTests: XCTestCase {
         XCTAssertEqual(duplicate.note, source.note)
         XCTAssertEqual(duplicate.paymentMethod, source.paymentMethod)
         XCTAssertEqual(duplicate.tags, source.tags)
+        XCTAssertEqual(duplicate.accountID, source.accountID)
     }
 }

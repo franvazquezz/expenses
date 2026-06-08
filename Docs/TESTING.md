@@ -16,6 +16,9 @@ Para esta fase, la logica importante esta en los view models y se puede probar c
 - Balance entre ingresos y gastos.
 - Calculo de consumido, restante y porcentaje de presupuestos.
 - Generacion de gastos recurrentes vencidos.
+- Calculo de activos, pasivos y patrimonio neto por moneda.
+- Impacto de gastos e ingresos confirmados sobre saldos de cuentas.
+- Equivalente de patrimonio en moneda principal con cotizaciones manuales.
 
 ## Ejecutar tests
 
@@ -43,6 +46,12 @@ Los tests iniciales cubren los view models. Las vistas SwiftUI quedan fuera de t
 - `IncomeFormViewModelTests`
 - `BudgetViewModelTests`
 - `RecurringExpenseViewModelTests`
+- `RecurringIncomeViewModelTests`
+- `IncomeListViewModelTests`
+- `DataTransferServiceTests`
+- `SyncReadinessServiceTests`
+- `AccountViewModelTests`
+- `AccountImpactServiceTests`
 
 ## Multi-moneda
 
@@ -74,3 +83,16 @@ La Fase 5 agrega tests para:
 - Avanzar la proxima fecha segun periodicidad semanal, mensual y anual.
 - Generar gastos vencidos hasta la fecha actual.
 - Evitar generacion cuando la plantilla esta inactiva.
+
+## Patrimonio
+
+La Fase de patrimonio agrega tests para:
+
+- Agrupar activos y pasivos por moneda.
+- Calcular patrimonio neto por moneda.
+- Ignorar cuentas inactivas por defecto.
+- Crear y actualizar cuentas desde el view model.
+- Aplicar y revertir gastos e ingresos sobre cuentas.
+- Ignorar movimientos pendientes o con moneda incompatible.
+- Calcular resumen por cuenta con ingresos, gastos y flujo neto.
+- Convertir patrimonio a moneda principal y reportar monedas sin cotizacion.

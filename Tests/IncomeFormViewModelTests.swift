@@ -9,6 +9,7 @@ final class IncomeFormViewModelTests: XCTestCase {
         viewModel.baseCurrency = "ARS"
         viewModel.category = "Freelance"
         viewModel.incomeDescription = "Proyecto"
+        viewModel.accountID = UUID()
         viewModel.updateConversion(using: [
             ExchangeRate(fromCurrency: "USD", toCurrency: "ARS", rate: 1400)
         ])
@@ -21,6 +22,7 @@ final class IncomeFormViewModelTests: XCTestCase {
         XCTAssertEqual(income?.baseCurrency, "ARS")
         XCTAssertEqual(income?.category, "Freelance")
         XCTAssertEqual(income?.incomeDescription, "Proyecto")
+        XCTAssertEqual(income?.accountID, viewModel.accountID)
     }
 
     func testRejectsInvalidIncomeAmount() {

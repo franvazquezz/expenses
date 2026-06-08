@@ -9,6 +9,7 @@ final class IncomeFormViewModel: ObservableObject {
     @Published var category: String
     @Published var incomeDescription: String
     @Published var note: String
+    @Published var accountID: UUID?
 
     init(income: Income? = nil) {
         amountText = income.map { Self.amountFormatter.string(from: NSNumber(value: $0.originalAmount)) ?? "\($0.originalAmount)" } ?? ""
@@ -19,6 +20,7 @@ final class IncomeFormViewModel: ObservableObject {
         category = income?.category ?? IncomeCategories.defaultCategory
         incomeDescription = income?.incomeDescription ?? ""
         note = income?.note ?? ""
+        accountID = income?.accountID
     }
 
     var parsedAmount: Double? {
@@ -82,7 +84,8 @@ final class IncomeFormViewModel: ObservableObject {
             date: date,
             category: category,
             incomeDescription: cleaned(incomeDescription),
-            note: cleaned(note)
+            note: cleaned(note),
+            accountID: accountID
         )
     }
 
@@ -99,6 +102,7 @@ final class IncomeFormViewModel: ObservableObject {
         income.category = category
         income.incomeDescription = cleaned(incomeDescription)
         income.note = cleaned(note)
+        income.accountID = accountID
     }
 
     private func cleaned(_ value: String) -> String {

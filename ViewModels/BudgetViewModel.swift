@@ -92,6 +92,7 @@ final class BudgetViewModel: ObservableObject {
             .map { budget in
                 let consumed = expenses
                     .filter {
+                        $0.isConfirmed &&
                         month.contains($0.date) &&
                         $0.category == budget.category &&
                         $0.baseCurrency == budget.currency

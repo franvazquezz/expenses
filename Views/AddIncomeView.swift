@@ -6,6 +6,7 @@ struct AddIncomeView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Currency.code) private var currencies: [Currency]
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     @StateObject private var viewModel = IncomeFormViewModel()
 
@@ -40,6 +41,7 @@ struct AddIncomeView: View {
         }
 
         modelContext.insert(income)
+        AccountImpactService.applyIncome(income, to: accounts)
         dismiss()
     }
 }
@@ -50,9 +52,14 @@ struct IncomeFormView: View {
     @ObservedObject var viewModel: IncomeFormViewModel
     @Query(sort: \Currency.code) private var currencies: [Currency]
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     private var activeCurrencies: [Currency] {
         CurrencyViewModel.activeCurrencies(from: currencies)
+    }
+
+    private var accountOptions: [Account] {
+        AccountImpactService.accountOptions(for: accounts, currency: viewModel.currency)
     }
 
     var body: some View {
@@ -70,6 +77,7 @@ struct IncomeFormView: View {
                     }
                 }
                 .onChange(of: viewModel.currency) {
+                    clearAccountIfNeeded()
                     viewModel.updateConversion(using: exchangeRates)
                 }
 
@@ -87,6 +95,13 @@ struct IncomeFormView: View {
 
                 TextField("Notas", text: $viewModel.note, axis: .vertical)
                     .lineLimit(2...4)
+
+                Picker("Cuenta", selection: $viewModel.accountID) {
+                    Text("Sin cuenta").tag(UUID?.none)
+                    ForEach(accountOptions) { account in
+                        Text("\(account.name) (\(account.currency))").tag(Optional(account.id))
+                    }
+                }
             }
 
             Section("Conversion") {
@@ -112,5 +127,15 @@ struct IncomeFormView: View {
         .formStyle(.grouped)
         .navigationTitle(title)
         .padding()
+    }
+
+    private func clearAccountIfNeeded() {
+        guard let accountID = viewModel.accountID else {
+            return
+        }
+
+        if !AccountImpactService.accountOptions(for: accounts, currency: viewModel.currency).contains(where: { $0.id == accountID }) {
+            viewModel.accountID = nil
+        }
     }
 }

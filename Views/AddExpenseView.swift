@@ -6,6 +6,7 @@ struct AddExpenseView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Currency.code) private var currencies: [Currency]
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     @StateObject private var viewModel = ExpenseFormViewModel()
 
@@ -40,6 +41,7 @@ struct AddExpenseView: View {
         }
 
         modelContext.insert(expense)
+        AccountImpactService.applyExpense(expense, to: accounts)
         dismiss()
     }
 }
@@ -50,9 +52,14 @@ struct ExpenseFormView: View {
     @ObservedObject var viewModel: ExpenseFormViewModel
     @Query(sort: \Currency.code) private var currencies: [Currency]
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     private var activeCurrencies: [Currency] {
         CurrencyViewModel.activeCurrencies(from: currencies)
+    }
+
+    private var accountOptions: [Account] {
+        AccountImpactService.accountOptions(for: accounts, currency: viewModel.currency)
     }
 
     var body: some View {
@@ -70,6 +77,7 @@ struct ExpenseFormView: View {
                     }
                 }
                 .onChange(of: viewModel.currency) {
+                    clearAccountIfNeeded()
                     viewModel.updateConversion(using: exchangeRates)
                 }
 
@@ -92,6 +100,13 @@ struct ExpenseFormView: View {
                     Text("Sin especificar").tag("")
                     ForEach(PaymentMethodOptions.all, id: \.self) { paymentMethod in
                         Text(paymentMethod).tag(paymentMethod)
+                    }
+                }
+
+                Picker("Cuenta", selection: $viewModel.accountID) {
+                    Text("Sin cuenta").tag(UUID?.none)
+                    ForEach(accountOptions) { account in
+                        Text("\(account.name) (\(account.currency))").tag(Optional(account.id))
                     }
                 }
 
@@ -121,5 +136,15 @@ struct ExpenseFormView: View {
         .formStyle(.grouped)
         .navigationTitle(title)
         .padding()
+    }
+
+    private func clearAccountIfNeeded() {
+        guard let accountID = viewModel.accountID else {
+            return
+        }
+
+        if !AccountImpactService.accountOptions(for: accounts, currency: viewModel.currency).contains(where: { $0.id == accountID }) {
+            viewModel.accountID = nil
+        }
     }
 }

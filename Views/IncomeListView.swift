@@ -4,6 +4,7 @@ import SwiftUI
 struct IncomeListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Income.date, order: .reverse) private var incomes: [Income]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     @StateObject private var viewModel = IncomeListViewModel()
     @State private var showingAddIncome = false
@@ -54,19 +55,57 @@ struct IncomeListView: View {
 
     private var filters: some View {
         FilterBar {
-            Picker("Mes", selection: $viewModel.selectedMonth) {
-                ForEach(MonthFilter.recentMonths, id: \.self) { month in
-                    Text(month.title).tag(month)
-                }
-            }
-            .frame(width: 220)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 12) {
+                    TextField("Buscar", text: $viewModel.searchText)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 220)
 
-            Picker("Categoria", selection: $viewModel.selectedCategory) {
-                ForEach(viewModel.categoryOptions(from: incomes), id: \.self) { category in
-                    Text(category).tag(category)
+                    Picker("Mes", selection: $viewModel.selectedMonth) {
+                        ForEach(MonthFilter.recentMonths, id: \.self) { month in
+                            Text(month.title).tag(month)
+                        }
+                    }
+                    .frame(width: 220)
+
+                    Picker("Categoria", selection: $viewModel.selectedCategory) {
+                        ForEach(viewModel.categoryOptions(from: incomes), id: \.self) { category in
+                            Text(category).tag(category)
+                        }
+                    }
+                    .frame(width: 180)
+                }
+
+                HStack(spacing: 12) {
+                    Picker("Moneda", selection: $viewModel.selectedCurrency) {
+                        ForEach(viewModel.currencyOptions(from: incomes), id: \.self) { currency in
+                            Text(currency).tag(currency)
+                        }
+                    }
+                    .frame(width: 140)
+
+                    Picker("Estado", selection: $viewModel.selectedStatus) {
+                        ForEach(MovementStatusFilter.allCases) { status in
+                            Text(status.title).tag(status)
+                        }
+                    }
+                    .frame(width: 150)
+
+                    Picker("Cuenta", selection: $viewModel.selectedAccountID) {
+                        Text("Todas").tag(UUID?.none)
+                        ForEach(accounts.sorted { $0.name < $1.name }) { account in
+                            Text(account.name).tag(Optional(account.id))
+                        }
+                    }
+                    .frame(width: 180)
+
+                    Button {
+                        viewModel.resetFilters()
+                    } label: {
+                        Label("Limpiar", systemImage: "xmark.circle")
+                    }
                 }
             }
-            .frame(width: 220)
 
             Spacer()
 
@@ -107,6 +146,19 @@ struct IncomeListView: View {
                 }
             }
 
+            TableColumn("Cuenta") { income in
+                Text(AccountImpactService.accountName(for: income.accountID, in: accounts))
+                    .foregroundStyle(income.accountID == nil ? .secondary : .primary)
+            }
+
+            TableColumn("Estado") { income in
+                StatusPill(
+                    title: income.isConfirmed ? "Confirmado" : "Pendiente",
+                    systemImage: income.isConfirmed ? "checkmark.circle" : "clock",
+                    color: income.isConfirmed ? AppTheme.incomeColor : AppTheme.budgetColor
+                )
+            }
+
             TableColumn("Notas") { income in
                 Text(income.note.isEmpty ? "-" : income.note)
                     .foregroundStyle(income.note.isEmpty ? .secondary : .primary)
@@ -122,6 +174,14 @@ struct IncomeListView: View {
                     .labelStyle(.iconOnly)
                     .help("Editar")
 
+                    Button {
+                        toggleConfirmation(for: income)
+                    } label: {
+                        Label(income.isConfirmed ? "Marcar pendiente" : "Confirmar", systemImage: income.isConfirmed ? "clock" : "checkmark.circle")
+                    }
+                    .labelStyle(.iconOnly)
+                    .help(income.isConfirmed ? "Marcar pendiente" : "Confirmar")
+
                     Button(role: .destructive) {
                         delete(income)
                     } label: {
@@ -131,11 +191,22 @@ struct IncomeListView: View {
                     .help("Eliminar")
                 }
             }
-            .width(80)
+            .width(110)
         }
     }
 
     private func delete(_ income: Income) {
+        AccountImpactService.revertIncome(income, in: accounts)
         modelContext.delete(income)
+    }
+
+    private func toggleConfirmation(for income: Income) {
+        if income.isConfirmed {
+            AccountImpactService.revertIncome(income, in: accounts)
+            income.isConfirmed = false
+        } else {
+            income.isConfirmed = true
+            AccountImpactService.applyIncome(income, to: accounts)
+        }
     }
 }

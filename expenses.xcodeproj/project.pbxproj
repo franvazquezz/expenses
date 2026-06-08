@@ -34,12 +34,29 @@
 		1000000000000000000000C0 /* RecurringExpense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D0 /* RecurringExpense.swift */; };
 		1000000000000000000000C1 /* RecurringExpenseViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D1 /* RecurringExpenseViewModel.swift */; };
 		1000000000000000000000C2 /* RecurringExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D2 /* RecurringExpenseListView.swift */; };
+		1000000000000000000000C3 /* RecurringIncome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D3 /* RecurringIncome.swift */; };
+		1000000000000000000000C4 /* RecurringIncomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D4 /* RecurringIncomeViewModel.swift */; };
+		1000000000000000000000C5 /* RecurringIncomeListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D5 /* RecurringIncomeListView.swift */; };
+		1000000000000000000000C6 /* SyncReadinessService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D6 /* SyncReadinessService.swift */; };
+		1000000000000000000000C7 /* SyncSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D7 /* SyncSettingsView.swift */; };
+		1000000000000000000000C8 /* DataTransferService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D8 /* DataTransferService.swift */; };
+		1000000000000000000000C9 /* DataManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000D9 /* DataManagementView.swift */; };
+		1000000000000000000000CA /* Account.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000DA /* Account.swift */; };
+		1000000000000000000000CB /* AccountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000DB /* AccountViewModel.swift */; };
+		1000000000000000000000CC /* NetWorthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000DC /* NetWorthView.swift */; };
+		1000000000000000000000CD /* AccountImpactService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1000000000000000000000DD /* AccountImpactService.swift */; };
 		200000000000000000000001 /* ExpenseFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000011 /* ExpenseFormViewModelTests.swift */; };
 		200000000000000000000002 /* ExpenseListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000012 /* ExpenseListViewModelTests.swift */; };
 		200000000000000000000003 /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000013 /* DashboardViewModelTests.swift */; };
 		200000000000000000000004 /* IncomeFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000014 /* IncomeFormViewModelTests.swift */; };
 		200000000000000000000005 /* BudgetViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000015 /* BudgetViewModelTests.swift */; };
 		200000000000000000000006 /* RecurringExpenseViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000016 /* RecurringExpenseViewModelTests.swift */; };
+		200000000000000000000007 /* RecurringIncomeViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000017 /* RecurringIncomeViewModelTests.swift */; };
+		200000000000000000000008 /* SyncReadinessServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000018 /* SyncReadinessServiceTests.swift */; };
+		200000000000000000000009 /* IncomeListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 200000000000000000000019 /* IncomeListViewModelTests.swift */; };
+		20000000000000000000000A /* DataTransferServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001A /* DataTransferServiceTests.swift */; };
+		20000000000000000000000B /* AccountViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001B /* AccountViewModelTests.swift */; };
+		20000000000000000000000C /* AccountImpactServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20000000000000000000001C /* AccountImpactServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,6 +98,17 @@
 		1000000000000000000000D0 /* RecurringExpense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpense.swift; sourceTree = "<group>"; };
 		1000000000000000000000D1 /* RecurringExpenseViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseViewModel.swift; sourceTree = "<group>"; };
 		1000000000000000000000D2 /* RecurringExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseListView.swift; sourceTree = "<group>"; };
+		1000000000000000000000D3 /* RecurringIncome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringIncome.swift; sourceTree = "<group>"; };
+		1000000000000000000000D4 /* RecurringIncomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringIncomeViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000D5 /* RecurringIncomeListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringIncomeListView.swift; sourceTree = "<group>"; };
+		1000000000000000000000D6 /* SyncReadinessService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncReadinessService.swift; sourceTree = "<group>"; };
+		1000000000000000000000D7 /* SyncSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncSettingsView.swift; sourceTree = "<group>"; };
+		1000000000000000000000D8 /* DataTransferService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTransferService.swift; sourceTree = "<group>"; };
+		1000000000000000000000D9 /* DataManagementView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManagementView.swift; sourceTree = "<group>"; };
+		1000000000000000000000DA /* Account.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Account.swift; sourceTree = "<group>"; };
+		1000000000000000000000DB /* AccountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModel.swift; sourceTree = "<group>"; };
+		1000000000000000000000DC /* NetWorthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetWorthView.swift; sourceTree = "<group>"; };
+		1000000000000000000000DD /* AccountImpactService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountImpactService.swift; sourceTree = "<group>"; };
 		200000000000000000000010 /* expensesTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = expensesTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		200000000000000000000011 /* ExpenseFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseFormViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000012 /* ExpenseListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListViewModelTests.swift; sourceTree = "<group>"; };
@@ -88,6 +116,12 @@
 		200000000000000000000014 /* IncomeFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeFormViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000015 /* BudgetViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BudgetViewModelTests.swift; sourceTree = "<group>"; };
 		200000000000000000000016 /* RecurringExpenseViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringExpenseViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000017 /* RecurringIncomeViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecurringIncomeViewModelTests.swift; sourceTree = "<group>"; };
+		200000000000000000000018 /* SyncReadinessServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncReadinessServiceTests.swift; sourceTree = "<group>"; };
+		200000000000000000000019 /* IncomeListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncomeListViewModelTests.swift; sourceTree = "<group>"; };
+		20000000000000000000001A /* DataTransferServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataTransferServiceTests.swift; sourceTree = "<group>"; };
+		20000000000000000000001B /* AccountViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewModelTests.swift; sourceTree = "<group>"; };
+		20000000000000000000001C /* AccountImpactServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountImpactServiceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -114,6 +148,7 @@
 				100000000000000000000031 /* App */,
 				100000000000000000000032 /* Models */,
 				100000000000000000000035 /* ViewModels */,
+				100000000000000000000036 /* Services */,
 				100000000000000000000033 /* Views */,
 				200000000000000000000030 /* Tests */,
 				100000000000000000000034 /* Products */,
@@ -137,6 +172,8 @@
 				1000000000000000000000B2 /* ExchangeRate.swift */,
 				1000000000000000000000BC /* Budget.swift */,
 				1000000000000000000000D0 /* RecurringExpense.swift */,
+				1000000000000000000000D3 /* RecurringIncome.swift */,
+				1000000000000000000000DA /* Account.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -155,6 +192,10 @@
 				1000000000000000000000B5 /* CurrencySettingsView.swift */,
 				1000000000000000000000BE /* BudgetListView.swift */,
 				1000000000000000000000D2 /* RecurringExpenseListView.swift */,
+				1000000000000000000000D5 /* RecurringIncomeListView.swift */,
+				1000000000000000000000DC /* NetWorthView.swift */,
+				1000000000000000000000D7 /* SyncSettingsView.swift */,
+				1000000000000000000000D9 /* DataManagementView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -180,8 +221,20 @@
 				1000000000000000000000B4 /* ExchangeRateViewModel.swift */,
 				1000000000000000000000BD /* BudgetViewModel.swift */,
 				1000000000000000000000D1 /* RecurringExpenseViewModel.swift */,
+				1000000000000000000000D4 /* RecurringIncomeViewModel.swift */,
+				1000000000000000000000DB /* AccountViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		100000000000000000000036 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				1000000000000000000000D6 /* SyncReadinessService.swift */,
+				1000000000000000000000D8 /* DataTransferService.swift */,
+				1000000000000000000000DD /* AccountImpactService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		200000000000000000000030 /* Tests */ = {
@@ -193,6 +246,12 @@
 				200000000000000000000014 /* IncomeFormViewModelTests.swift */,
 				200000000000000000000015 /* BudgetViewModelTests.swift */,
 				200000000000000000000016 /* RecurringExpenseViewModelTests.swift */,
+				200000000000000000000017 /* RecurringIncomeViewModelTests.swift */,
+				200000000000000000000018 /* SyncReadinessServiceTests.swift */,
+				200000000000000000000019 /* IncomeListViewModelTests.swift */,
+				20000000000000000000001A /* DataTransferServiceTests.swift */,
+				20000000000000000000001B /* AccountViewModelTests.swift */,
+				20000000000000000000001C /* AccountImpactServiceTests.swift */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -324,6 +383,17 @@
 				1000000000000000000000C0 /* RecurringExpense.swift in Sources */,
 				1000000000000000000000C1 /* RecurringExpenseViewModel.swift in Sources */,
 				1000000000000000000000C2 /* RecurringExpenseListView.swift in Sources */,
+				1000000000000000000000C3 /* RecurringIncome.swift in Sources */,
+				1000000000000000000000C4 /* RecurringIncomeViewModel.swift in Sources */,
+				1000000000000000000000C5 /* RecurringIncomeListView.swift in Sources */,
+				1000000000000000000000C6 /* SyncReadinessService.swift in Sources */,
+				1000000000000000000000C7 /* SyncSettingsView.swift in Sources */,
+				1000000000000000000000C8 /* DataTransferService.swift in Sources */,
+				1000000000000000000000C9 /* DataManagementView.swift in Sources */,
+				1000000000000000000000CA /* Account.swift in Sources */,
+				1000000000000000000000CB /* AccountViewModel.swift in Sources */,
+				1000000000000000000000CC /* NetWorthView.swift in Sources */,
+				1000000000000000000000CD /* AccountImpactService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,6 +407,12 @@
 				200000000000000000000004 /* IncomeFormViewModelTests.swift in Sources */,
 				200000000000000000000005 /* BudgetViewModelTests.swift in Sources */,
 				200000000000000000000006 /* RecurringExpenseViewModelTests.swift in Sources */,
+				200000000000000000000007 /* RecurringIncomeViewModelTests.swift in Sources */,
+				200000000000000000000008 /* SyncReadinessServiceTests.swift in Sources */,
+				200000000000000000000009 /* IncomeListViewModelTests.swift in Sources */,
+				20000000000000000000000A /* DataTransferServiceTests.swift in Sources */,
+				20000000000000000000000B /* AccountViewModelTests.swift in Sources */,
+				20000000000000000000000C /* AccountImpactServiceTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

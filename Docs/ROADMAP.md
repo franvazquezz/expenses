@@ -80,7 +80,7 @@
 - [x] Dashboard con avance de presupuestos del mes.
 - [x] Tests de calculo de presupuesto.
 
-## Fase 5 - Gastos recurrentes
+## Fase 5 - Recurrencia y automatizacion
 
 - [x] Modelo `RecurringExpense`.
 - [x] Crear gasto recurrente.
@@ -93,42 +93,58 @@
 - [x] Generacion automatica al abrir la app.
 - [x] Generacion manual de pendientes.
 - [x] Tests de generacion recurrente.
+- [x] Modelo `RecurringIncome`.
+- [x] Crear ingreso recurrente.
+- [x] Editar ingreso recurrente.
+- [x] Eliminar ingreso recurrente.
+- [x] Activar y desactivar ingreso recurrente.
+- [x] Generacion automatica de ingresos al abrir la app.
+- [x] Generacion manual de ingresos pendientes.
+- [x] Tests de generacion de ingresos recurrentes.
+- [x] Marcado de movimientos recurrentes como confirmados.
+- [x] Dashboard y presupuestos ignoran movimientos pendientes.
 
 ## Fase 6 - Graficos
 
-- [ ] Dashboard visual con Charts de Apple.
-- [ ] Torta por categoria.
-- [ ] Barras por mes.
-- [ ] Evolucion anual.
-- [ ] Evolucion por moneda.
+- [x] Dashboard visual con Charts de Apple.
+- [x] Torta por categoria.
+- [x] Barras por mes.
+- [x] Evolucion anual.
+- [x] Evolucion por moneda.
 
 ## Fase 7 - Cuentas
 
-- [ ] Modelo `Account`.
-- [ ] Cuentas como Efectivo, Mercado Pago, Naranja X, Brubank, Galicia y tarjetas.
-- [ ] Cada gasto impacta en una cuenta.
-- [ ] Filtros y dashboard por cuenta.
+- [x] Modelo `Account`.
+- [x] Cuentas como Efectivo, Mercado Pago, Naranja X, Brubank, Galicia y tarjetas.
+- [x] Cada gasto puede impactar en una cuenta.
+- [x] Ingresos pueden impactar en una cuenta.
+- [x] Filtros y columnas por cuenta en gastos e ingresos.
+- [x] Dashboard analitico por cuenta.
 
 ## Fase 8 - Importacion y exportacion
 
-- [ ] Exportar CSV.
+- [x] Exportar CSV.
 - [ ] Exportar Excel.
 - [ ] Exportar JSON.
-- [ ] Importar CSV de gastos.
+- [x] Importar CSV de gastos.
 - [ ] Importar CSV de bancos.
 
 ## Fase 9 - Busquedas
 
-- [ ] Buscar por texto.
-- [ ] Buscar por categoria.
-- [ ] Buscar por fecha.
-- [ ] Buscar por moneda.
-- [ ] Buscar por cuenta.
-- [ ] Buscar por metodo de pago.
+- [x] Buscar por texto.
+- [x] Buscar por categoria.
+- [x] Buscar por fecha.
+- [x] Buscar por moneda.
+- [x] Buscar por cuenta.
+- [x] Buscar por metodo de pago.
 
 ## Fase 10 - Backup
 
-- [ ] Exportar base completa local.
+- [x] Exportar base completa local.
+- [x] Restaurar base desde backup local.
+- [x] Evaluacion CloudKit + SwiftData.
+- [x] Estrategia de conflictos de sincronizacion.
+- [x] Preparacion para iPhone.
 - [ ] Sincronizacion iCloud con CloudKit + SwiftData.
 - [ ] Sincronizacion entre MacBook, iMac y Mac Mini.
 
@@ -142,14 +158,14 @@
 
 ## Fase 12 - Patrimonio personal
 
-- [ ] Cuentas bancarias.
-- [ ] Efectivo.
-- [ ] USDC.
-- [ ] Binance.
-- [ ] Vesseo.
-- [ ] Inversiones.
-- [ ] Dashboard de patrimonio total por moneda.
-- [ ] Equivalente total en moneda base.
+- [x] Cuentas bancarias.
+- [x] Efectivo.
+- [x] USDC.
+- [x] Binance.
+- [x] Vesseo.
+- [x] Inversiones.
+- [x] Dashboard de patrimonio total por moneda.
+- [x] Equivalente total en moneda base.
 
 ## Proximas fases posibles
 

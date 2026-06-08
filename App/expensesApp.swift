@@ -7,6 +7,6 @@ struct expensesApp: App {
         WindowGroup {
             DashboardView()
         }
-        .modelContainer(for: [Expense.self, Income.self, Currency.self, ExchangeRate.self, Budget.self, RecurringExpense.self])
+        .modelContainer(for: [Expense.self, Income.self, Currency.self, ExchangeRate.self, Budget.self, RecurringExpense.self, RecurringIncome.self, Account.self])
     }
 }

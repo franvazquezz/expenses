@@ -58,4 +58,64 @@ final class DashboardViewModelTests: XCTestCase {
 
         XCTAssertEqual(balance.first { $0.currency == "ARS" }?.total, 1210000)
     }
+
+    func testDashboardIgnoresPendingMovementsInTotals() {
+        let viewModel = DashboardViewModel()
+        let today = Date()
+        let incomes = [
+            Income(amount: 1000, currency: "ARS", convertedAmount: 1000, baseCurrency: "ARS", date: today, category: "Sueldo"),
+            Income(amount: 500, currency: "ARS", convertedAmount: 500, baseCurrency: "ARS", date: today, category: "Sueldo", isConfirmed: false)
+        ]
+        let expenses = [
+            Expense(amount: 100, currency: "ARS", convertedAmount: 100, baseCurrency: "ARS", date: today, category: "Comida"),
+            Expense(amount: 50, currency: "ARS", convertedAmount: 50, baseCurrency: "ARS", date: today, category: "Comida", isConfirmed: false)
+        ]
+
+        let balance = viewModel.balanceThisMonth(expenses: expenses, incomes: incomes)
+
+        XCTAssertEqual(viewModel.expenseTotalsThisMonth(from: expenses).first { $0.currency == "ARS" }?.total, 100)
+        XCTAssertEqual(viewModel.incomeTotalsThisMonth(from: incomes).first { $0.currency == "ARS" }?.total, 1000)
+        XCTAssertEqual(balance.first { $0.currency == "ARS" }?.total, 900)
+    }
+
+    func testMonthlyMovementTotalsGroupByMonthAndCurrency() {
+        let viewModel = DashboardViewModel()
+        let calendar = Calendar.current
+        let currentMonth = Date()
+        let previousMonth = calendar.date(byAdding: .month, value: -1, to: currentMonth)!
+        let incomes = [
+            Income(amount: 1000, currency: "ARS", convertedAmount: 1000, baseCurrency: "ARS", date: previousMonth, category: "Sueldo"),
+            Income(amount: 2000, currency: "ARS", convertedAmount: 2000, baseCurrency: "ARS", date: currentMonth, category: "Sueldo")
+        ]
+        let expenses = [
+            Expense(amount: 300, currency: "ARS", convertedAmount: 300, baseCurrency: "ARS", date: previousMonth, category: "Comida"),
+            Expense(amount: 500, currency: "ARS", convertedAmount: 500, baseCurrency: "ARS", date: currentMonth, category: "Comida")
+        ]
+
+        let totals = viewModel.monthlyMovementTotals(expenses: expenses, incomes: incomes, monthsBack: 2)
+
+        XCTAssertEqual(totals.count, 2)
+        XCTAssertEqual(totals.first?.expenseTotal, 300)
+        XCTAssertEqual(totals.first?.incomeTotal, 1000)
+        XCTAssertEqual(totals.first?.balance, 700)
+        XCTAssertEqual(totals.last?.expenseTotal, 500)
+        XCTAssertEqual(totals.last?.incomeTotal, 2000)
+        XCTAssertEqual(totals.last?.balance, 1500)
+    }
+
+    func testPaymentMethodTotalsGroupByMethodAndCurrency() {
+        let viewModel = DashboardViewModel()
+        let today = Date()
+        let expenses = [
+            Expense(amount: 100, currency: "ARS", convertedAmount: 100, baseCurrency: "ARS", date: today, category: "Comida", paymentMethod: "Efectivo"),
+            Expense(amount: 50, currency: "ARS", convertedAmount: 50, baseCurrency: "ARS", date: today, category: "Transporte", paymentMethod: "Efectivo"),
+            Expense(amount: 20, currency: "USD", convertedAmount: 28000, baseCurrency: "ARS", date: today, category: "Ocio", paymentMethod: "Tarjeta")
+        ]
+
+        let totals = viewModel.paymentMethodTotals(from: expenses)
+
+        XCTAssertEqual(totals.first { $0.paymentMethod == "Efectivo" }?.total, 150)
+        XCTAssertEqual(totals.first { $0.paymentMethod == "Tarjeta" }?.total, 28000)
+        XCTAssertEqual(totals.first { $0.paymentMethod == "Tarjeta" }?.currency, "ARS")
+    }
 }

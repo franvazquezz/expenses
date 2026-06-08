@@ -1,3 +1,4 @@
+import Charts
 import SwiftData
 import SwiftUI
 
@@ -9,6 +10,8 @@ struct DashboardView: View {
     @Query(sort: \ExchangeRate.fromCurrency) private var exchangeRates: [ExchangeRate]
     @Query(sort: \Budget.category) private var budgets: [Budget]
     @Query(sort: \RecurringExpense.nextRunDate) private var recurringExpenses: [RecurringExpense]
+    @Query(sort: \RecurringIncome.nextRunDate) private var recurringIncomes: [RecurringIncome]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     private let viewModel = DashboardViewModel()
 
@@ -46,9 +49,33 @@ struct DashboardView: View {
                 }
 
                 NavigationLink {
+                    NetWorthView()
+                } label: {
+                    Label("Patrimonio", systemImage: "building.columns")
+                }
+
+                NavigationLink {
+                    DataManagementView()
+                } label: {
+                    Label("Datos", systemImage: "externaldrive")
+                }
+
+                NavigationLink {
                     RecurringExpenseListView()
                 } label: {
-                    Label("Recurrentes", systemImage: "repeat.circle")
+                    Label("Gastos recurrentes", systemImage: "repeat.circle")
+                }
+
+                NavigationLink {
+                    RecurringIncomeListView()
+                } label: {
+                    Label("Ingresos recurrentes", systemImage: "repeat.circle")
+                }
+
+                NavigationLink {
+                    SyncSettingsView()
+                } label: {
+                    Label("Sincronizacion", systemImage: "icloud")
                 }
             }
             .navigationTitle("expenses")
@@ -66,6 +93,7 @@ struct DashboardView: View {
                 )
                 .forEach { modelContext.insert($0) }
             generateDueRecurringExpenses()
+            generateDueRecurringIncomes()
         }
     }
 
@@ -79,6 +107,8 @@ struct DashboardView: View {
                 )
 
                 metricGrid
+                netWorthSummary
+                analysisCharts
                 budgetProgress
 
                 HStack(alignment: .top, spacing: 20) {
@@ -133,6 +163,43 @@ struct DashboardView: View {
                     value: viewModel.todayExpenses(from: expenses).count,
                     systemImage: "number"
                 )
+            }
+        }
+    }
+
+    private var analysisCharts: some View {
+        Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+            GridRow {
+                MonthlyExpenseChart(items: viewModel.monthlyMovementTotals(expenses: expenses, incomes: incomes))
+                CategoryDistributionChart(items: viewModel.topCategories(from: expenses, limit: 8))
+            }
+
+            GridRow {
+                MonthlyBalanceChart(items: viewModel.monthlyMovementTotals(expenses: expenses, incomes: incomes))
+                PaymentMethodChart(items: viewModel.paymentMethodTotals(from: expenses))
+            }
+        }
+    }
+
+    private var netWorthSummary: some View {
+        AppPanel(title: "Patrimonio neto", systemImage: "building.columns") {
+            let totals = AccountViewModel.summaryTotals(from: accounts)
+
+            if totals.isEmpty {
+                Text("El patrimonio aparecera cuando cargues cuentas, activos o pasivos.")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(totals) { total in
+                    HStack {
+                        Text(total.currency)
+                            .fontWeight(.semibold)
+                        Spacer()
+                        Text(total.netWorth, format: .currency(code: total.currency))
+                            .monospacedDigit()
+                            .foregroundStyle(total.netWorth >= 0 ? AppTheme.balanceColor : AppTheme.expenseColor)
+                    }
+                    Divider()
+                }
             }
         }
     }
@@ -218,6 +285,123 @@ struct DashboardView: View {
                 modelContext.insert(expense)
             }
             recurringExpense.nextRunDate = result.nextRunDate
+        }
+    }
+
+    private func generateDueRecurringIncomes() {
+        for recurringIncome in recurringIncomes {
+            let result = RecurringIncomeViewModel.generatedIncomes(for: recurringIncome)
+            for income in result.createdIncomes {
+                modelContext.insert(income)
+            }
+            recurringIncome.nextRunDate = result.nextRunDate
+        }
+    }
+}
+
+struct MonthlyExpenseChart: View {
+    let items: [MonthlyMovementTotal]
+
+    var body: some View {
+        AppPanel(title: "Gastos por mes", systemImage: "chart.bar.xaxis") {
+            if items.isEmpty {
+                Text("El grafico aparecera cuando haya gastos confirmados.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(items) { item in
+                    BarMark(
+                        x: .value("Mes", item.monthStart, unit: .month),
+                        y: .value("Gasto", item.expenseTotal)
+                    )
+                    .foregroundStyle(by: .value("Moneda", item.currency))
+                }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .month)) { _ in
+                        AxisGridLine()
+                        AxisValueLabel(format: .dateTime.month(.abbreviated))
+                    }
+                }
+                .frame(height: 220)
+            }
+        }
+    }
+}
+
+struct MonthlyBalanceChart: View {
+    let items: [MonthlyMovementTotal]
+
+    var body: some View {
+        AppPanel(title: "Balance mensual", systemImage: "chart.xyaxis.line") {
+            if items.isEmpty {
+                Text("El grafico aparecera cuando haya ingresos o gastos confirmados.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(items) { item in
+                    LineMark(
+                        x: .value("Mes", item.monthStart, unit: .month),
+                        y: .value("Balance", item.balance)
+                    )
+                    .foregroundStyle(by: .value("Moneda", item.currency))
+
+                    PointMark(
+                        x: .value("Mes", item.monthStart, unit: .month),
+                        y: .value("Balance", item.balance)
+                    )
+                    .foregroundStyle(by: .value("Moneda", item.currency))
+                }
+                .chartXAxis {
+                    AxisMarks(values: .stride(by: .month)) { _ in
+                        AxisGridLine()
+                        AxisValueLabel(format: .dateTime.month(.abbreviated))
+                    }
+                }
+                .frame(height: 220)
+            }
+        }
+    }
+}
+
+struct CategoryDistributionChart: View {
+    let items: [CategoryTotal]
+
+    var body: some View {
+        AppPanel(title: "Gastos por categoria", systemImage: "chart.pie") {
+            if items.isEmpty {
+                Text("El grafico aparecera cuando haya gastos confirmados.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(items) { item in
+                    SectorMark(
+                        angle: .value("Total", item.total),
+                        innerRadius: .ratio(0.58),
+                        angularInset: 1.5
+                    )
+                    .foregroundStyle(by: .value("Categoria", "\(item.category) \(item.currency)"))
+                }
+                .frame(height: 220)
+            }
+        }
+    }
+}
+
+struct PaymentMethodChart: View {
+    let items: [PaymentMethodTotal]
+
+    var body: some View {
+        AppPanel(title: "Gastos por metodo de pago", systemImage: "creditcard") {
+            if items.isEmpty {
+                Text("El grafico aparecera cuando haya metodos de pago confirmados.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Chart(items) { item in
+                    BarMark(
+                        x: .value("Total", item.total),
+                        y: .value("Metodo", item.paymentMethod)
+                    )
+                    .foregroundStyle(by: .value("Moneda", item.currency))
+                }
+                .frame(height: 220)
+            }
         }
     }
 }

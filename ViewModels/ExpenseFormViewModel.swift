@@ -11,6 +11,7 @@ final class ExpenseFormViewModel: ObservableObject {
     @Published var note: String
     @Published var paymentMethod: String
     @Published var tagsText: String
+    @Published var accountID: UUID?
 
     init(expense: Expense? = nil) {
         amountText = expense.map { Self.amountFormatter.string(from: NSNumber(value: $0.originalAmount)) ?? "\($0.originalAmount)" } ?? ""
@@ -23,6 +24,7 @@ final class ExpenseFormViewModel: ObservableObject {
         note = expense?.note ?? ""
         paymentMethod = expense?.paymentMethod ?? ""
         tagsText = expense?.tags.joined(separator: ", ") ?? ""
+        accountID = expense?.accountID
     }
 
     var parsedAmount: Double? {
@@ -95,7 +97,8 @@ final class ExpenseFormViewModel: ObservableObject {
             expenseDescription: cleaned(expenseDescription),
             note: cleaned(note),
             paymentMethod: cleaned(paymentMethod),
-            tags: tags
+            tags: tags,
+            accountID: accountID
         )
     }
 
@@ -114,6 +117,7 @@ final class ExpenseFormViewModel: ObservableObject {
         expense.note = cleaned(note)
         expense.paymentMethod = cleaned(paymentMethod)
         expense.tags = tags
+        expense.accountID = accountID
     }
 
     private func cleaned(_ value: String) -> String {

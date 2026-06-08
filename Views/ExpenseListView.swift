@@ -4,6 +4,7 @@ import SwiftUI
 struct ExpenseListView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \Expense.date, order: .reverse) private var expenses: [Expense]
+    @Query(sort: \Account.name) private var accounts: [Account]
 
     @StateObject private var viewModel = ExpenseListViewModel()
     @State private var showingAddExpense = false
@@ -54,19 +55,71 @@ struct ExpenseListView: View {
 
     private var filters: some View {
         FilterBar {
-            Picker("Mes", selection: $viewModel.selectedMonth) {
-                ForEach(MonthFilter.recentMonths, id: \.self) { month in
-                    Text(month.title).tag(month)
-                }
-            }
-            .frame(width: 220)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 12) {
+                    TextField("Buscar", text: $viewModel.searchText)
+                        .textFieldStyle(.roundedBorder)
+                        .frame(width: 220)
 
-            Picker("Categoria", selection: $viewModel.selectedCategory) {
-                ForEach(viewModel.categoryOptions(from: expenses), id: \.self) { category in
-                    Text(category).tag(category)
+                    Picker("Mes", selection: $viewModel.selectedMonth) {
+                        ForEach(MonthFilter.recentMonths, id: \.self) { month in
+                            Text(month.title).tag(month)
+                        }
+                    }
+                    .frame(width: 220)
+
+                    Picker("Categoria", selection: $viewModel.selectedCategory) {
+                        ForEach(viewModel.categoryOptions(from: expenses), id: \.self) { category in
+                            Text(category).tag(category)
+                        }
+                    }
+                    .frame(width: 180)
+
+                    Picker("Estado", selection: $viewModel.selectedStatus) {
+                        ForEach(MovementStatusFilter.allCases) { status in
+                            Text(status.title).tag(status)
+                        }
+                    }
+                    .frame(width: 150)
+                }
+
+                HStack(spacing: 12) {
+                    Picker("Etiqueta", selection: $viewModel.selectedTag) {
+                        ForEach(viewModel.tagOptions(from: expenses), id: \.self) { tag in
+                            Text(tag).tag(tag)
+                        }
+                    }
+                    .frame(width: 180)
+
+                    Picker("Moneda", selection: $viewModel.selectedCurrency) {
+                        ForEach(viewModel.currencyOptions(from: expenses), id: \.self) { currency in
+                            Text(currency).tag(currency)
+                        }
+                    }
+                    .frame(width: 140)
+
+                    Picker("Pago", selection: $viewModel.selectedPaymentMethod) {
+                        ForEach(viewModel.paymentMethodOptions(from: expenses), id: \.self) { paymentMethod in
+                            Text(paymentMethod).tag(paymentMethod)
+                        }
+                    }
+                    .frame(width: 180)
+
+                    Picker("Cuenta", selection: $viewModel.selectedAccountID) {
+                        Text("Todas").tag(UUID?.none)
+                        ForEach(accounts.sorted { $0.name < $1.name }) { account in
+                            Text(account.name).tag(Optional(account.id))
+                        }
+                    }
+                    .frame(width: 180)
+
+                    Button {
+                        viewModel.resetFilters()
+                    } label: {
+                        Label("Limpiar", systemImage: "xmark.circle")
+                    }
                 }
             }
-            .frame(width: 220)
 
             Spacer()
 
@@ -119,6 +172,19 @@ struct ExpenseListView: View {
                     .foregroundStyle(expense.paymentMethod.isEmpty ? .secondary : .primary)
             }
 
+            TableColumn("Cuenta") { expense in
+                Text(AccountImpactService.accountName(for: expense.accountID, in: accounts))
+                    .foregroundStyle(expense.accountID == nil ? .secondary : .primary)
+            }
+
+            TableColumn("Estado") { expense in
+                StatusPill(
+                    title: expense.isConfirmed ? "Confirmado" : "Pendiente",
+                    systemImage: expense.isConfirmed ? "checkmark.circle" : "clock",
+                    color: expense.isConfirmed ? AppTheme.incomeColor : AppTheme.budgetColor
+                )
+            }
+
             TableColumn("Notas") { expense in
                 Text(expense.note.isEmpty ? "-" : expense.note)
                     .foregroundStyle(expense.note.isEmpty ? .secondary : .primary)
@@ -142,6 +208,14 @@ struct ExpenseListView: View {
                     .labelStyle(.iconOnly)
                     .help("Duplicar")
 
+                    Button {
+                        toggleConfirmation(for: expense)
+                    } label: {
+                        Label(expense.isConfirmed ? "Marcar pendiente" : "Confirmar", systemImage: expense.isConfirmed ? "clock" : "checkmark.circle")
+                    }
+                    .labelStyle(.iconOnly)
+                    .help(expense.isConfirmed ? "Marcar pendiente" : "Confirmar")
+
                     Button(role: .destructive) {
                         delete(expense)
                     } label: {
@@ -151,15 +225,28 @@ struct ExpenseListView: View {
                     .help("Eliminar")
                 }
             }
-            .width(120)
+            .width(150)
         }
     }
 
     private func duplicate(_ expense: Expense) {
-        modelContext.insert(viewModel.duplicate(expense))
+        let duplicatedExpense = viewModel.duplicate(expense)
+        modelContext.insert(duplicatedExpense)
+        AccountImpactService.applyExpense(duplicatedExpense, to: accounts)
     }
 
     private func delete(_ expense: Expense) {
+        AccountImpactService.revertExpense(expense, in: accounts)
         modelContext.delete(expense)
+    }
+
+    private func toggleConfirmation(for expense: Expense) {
+        if expense.isConfirmed {
+            AccountImpactService.revertExpense(expense, in: accounts)
+            expense.isConfirmed = false
+        } else {
+            expense.isConfirmed = true
+            AccountImpactService.applyExpense(expense, to: accounts)
+        }
     }
 }
