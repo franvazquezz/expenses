@@ -69,6 +69,7 @@ struct NetWorthView: View {
             }
         }
         .navigationTitle("Patrimonio")
+        .accessibilityIdentifier("screen.netWorth")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -76,6 +77,7 @@ struct NetWorthView: View {
                 } label: {
                     Label("Agregar cuenta", systemImage: "plus")
                 }
+                .accessibilityIdentifier("netWorth.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddAccount) {

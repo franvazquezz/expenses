@@ -36,6 +36,7 @@ struct IncomeListView: View {
             }
         }
         .navigationTitle("Ingresos")
+        .accessibilityIdentifier("screen.incomes")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -43,6 +44,7 @@ struct IncomeListView: View {
                 } label: {
                     Label("Agregar ingreso", systemImage: "plus")
                 }
+                .accessibilityIdentifier("incomes.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddIncome) {
@@ -60,6 +62,7 @@ struct IncomeListView: View {
                     TextField("Buscar", text: $viewModel.searchText)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 220)
+                        .accessibilityIdentifier("incomes.searchField")
 
                     Picker("Mes", selection: $viewModel.selectedMonth) {
                         ForEach(MonthFilter.recentMonths, id: \.self) { month in
@@ -114,6 +117,7 @@ struct IncomeListView: View {
             } label: {
                 Label("Agregar", systemImage: "plus.circle.fill")
             }
+            .accessibilityIdentifier("incomes.addButton")
         }
     }
 

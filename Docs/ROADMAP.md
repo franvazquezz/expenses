@@ -156,7 +156,7 @@
 - [x] Alertas de presupuesto superado.
 - [x] Alertas de gasto inusual.
 - [x] Recordatorio de carga diaria configurable localmente.
-- [ ] Notificaciones del sistema para recordatorio diario si se decide pedir permisos.
+- [x] Notificaciones locales del sistema para recordatorio diario.
 
 ## Fase 12 - Patrimonio personal
 
@@ -177,10 +177,15 @@
 - [x] Target de UI tests con smoke tests de dashboard, navegacion a gastos y apertura de alta de gasto.
 - [x] Test de esquema SwiftData actual con `ModelContainer` en memoria.
 - [x] Identificadores de accesibilidad iniciales para navegacion y alta de gastos.
-- [ ] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
-- [ ] Tests de migracion SwiftData versionada cuando se defina `SchemaMigrationPlan`.
-- [ ] Revision completa de accesibilidad.
-- [ ] Revision general de rendimiento con volumen alto de datos.
+- [x] Optimizacion de progreso de presupuestos para volumen alto.
+- [x] Optimizacion de resumen de movimientos por cuenta para volumen alto.
+- [x] Tests de volumen y performance para presupuestos y resumen por cuenta.
+- [x] Identificadores de accesibilidad ampliados para pantallas, formularios y acciones principales.
+- [x] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
+- [x] Smoke test de navegacion por pantallas principales.
+- [x] Plan de migracion SwiftData versionado inicial.
+- [x] Tests de migracion SwiftData versionada inicial.
+- [ ] Validacion manual de accesibilidad con VoiceOver y navegacion por teclado.
 
 ## Proximas fases posibles
 

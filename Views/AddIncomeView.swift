@@ -29,6 +29,7 @@ struct AddIncomeView: View {
                 }
         }
         .frame(minWidth: 480, minHeight: 460)
+        .accessibilityIdentifier("incomeForm.add")
         .onAppear {
             viewModel.setDefaultCurrencyIfNeeded(CurrencyViewModel.defaultCurrencyCode(from: currencies))
             viewModel.updateConversion(using: exchangeRates)
@@ -67,6 +68,7 @@ struct IncomeFormView: View {
             Section("Datos principales") {
                 TextField("Monto", text: $viewModel.amountText)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("incomeForm.amountField")
                     .onChange(of: viewModel.amountText) {
                         viewModel.updateConversion(using: exchangeRates)
                     }
@@ -92,9 +94,11 @@ struct IncomeFormView: View {
 
             Section("Detalle") {
                 TextField("Descripcion", text: $viewModel.incomeDescription)
+                    .accessibilityIdentifier("incomeForm.descriptionField")
 
                 TextField("Notas", text: $viewModel.note, axis: .vertical)
                     .lineLimit(2...4)
+                    .accessibilityIdentifier("incomeForm.noteField")
 
                 Picker("Cuenta", selection: $viewModel.accountID) {
                     Text("Sin cuenta").tag(UUID?.none)
@@ -116,6 +120,7 @@ struct IncomeFormView: View {
 
                 TextField("Monto convertido", text: $viewModel.convertedAmountText)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("incomeForm.convertedAmountField")
 
                 if viewModel.needsConversion {
                     Text("Se calcula con la cotizacion manual disponible. Si no existe, podes cargar el monto convertido manualmente.")

@@ -83,10 +83,14 @@
 - [x] Target de UI tests con smoke tests de dashboard, navegacion a gastos y apertura de alta de gasto.
 - [x] Test de esquema SwiftData actual con `ModelContainer` en memoria.
 - [x] Identificadores de accesibilidad iniciales para navegacion y alta de gastos.
-- [ ] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
-- [ ] Tests de migracion SwiftData versionada cuando se defina `SchemaMigrationPlan`.
-- [ ] Revision completa de accesibilidad.
-- [ ] Revision general de rendimiento con volumen alto de gastos.
+- [x] Optimizacion de presupuestos y resumen por cuenta para volumen alto.
+- [x] Tests de volumen y performance para agregados compartidos.
+- [x] Identificadores de accesibilidad ampliados en pantallas principales.
+- [x] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
+- [x] Smoke test de navegacion por pantallas principales.
+- [x] Plan de migracion SwiftData versionado inicial.
+- [x] Tests de migracion SwiftData versionada inicial.
+- [ ] Validacion manual de accesibilidad con VoiceOver y navegacion por teclado.
 
 ## Fase 9 - Funciones avanzadas locales
 
@@ -95,4 +99,4 @@
 - [x] Alertas de presupuesto superado.
 - [x] Alertas de gasto inusual.
 - [x] Recordatorio de carga diaria configurable localmente.
-- [ ] Notificaciones del sistema para recordatorio diario si se decide pedir permisos.
+- [x] Notificaciones locales del sistema para recordatorio diario.

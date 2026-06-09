@@ -25,6 +25,11 @@ struct BudgetProgress: Identifiable {
     }
 }
 
+private struct BudgetProgressKey: Hashable {
+    let category: String
+    let currency: String
+}
+
 final class BudgetViewModel: ObservableObject {
     @Published var selectedMonth = MonthFilter.current
     @Published var category = ExpenseCategories.defaultCategory
@@ -86,18 +91,19 @@ final class BudgetViewModel: ObservableObject {
         month: MonthFilter = .current,
         includeInactive: Bool = false
     ) -> [BudgetProgress] {
-        budgets
+        let consumedByBudgetKey = expenses
+            .filter { $0.isConfirmed && month.contains($0.date) }
+            .reduce(into: [BudgetProgressKey: Double]()) { totals, expense in
+                let key = BudgetProgressKey(category: expense.category, currency: expense.baseCurrency)
+                totals[key, default: 0] += expense.convertedAmount
+            }
+
+        return budgets
             .filter { (includeInactive || $0.isActive) && month.contains($0.monthStart) }
             .sorted { $0.category < $1.category }
             .map { budget in
-                let consumed = expenses
-                    .filter {
-                        $0.isConfirmed &&
-                        month.contains($0.date) &&
-                        $0.category == budget.category &&
-                        $0.baseCurrency == budget.currency
-                    }
-                    .reduce(0) { $0 + $1.convertedAmount }
+                let key = BudgetProgressKey(category: budget.category, currency: budget.currency)
+                let consumed = consumedByBudgetKey[key] ?? 0
 
                 return BudgetProgress(budget: budget, consumed: consumed)
             }

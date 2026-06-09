@@ -39,7 +39,11 @@ enum AppPersistenceService {
             configuration = ModelConfiguration(schema: schema, cloudKitDatabase: .private(containerIdentifier))
         }
 
-        return try ModelContainer(for: schema, configurations: [configuration])
+        return try ModelContainer(
+            for: schema,
+            migrationPlan: ExpensesMigrationPlan.self,
+            configurations: [configuration]
+        )
     }
 
     static func resolveMode(
@@ -60,17 +64,6 @@ enum AppPersistenceService {
     }
 
     static func makeSchema() -> Schema {
-        Schema([
-            Expense.self,
-            Income.self,
-            Currency.self,
-            ExchangeRate.self,
-            Budget.self,
-            RecurringExpense.self,
-            RecurringIncome.self,
-            Account.self,
-            SavingsGoal.self,
-            DailyReminderSettings.self
-        ])
+        Schema(versionedSchema: ExpensesSchemaV1.self)
     }
 }

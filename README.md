@@ -49,9 +49,12 @@ Fases 1 a 11 implementadas en modo local:
 - Comparacion mensual de ingresos, gastos y balance contra el mes anterior.
 - Alertas de presupuesto superado y gasto inusual.
 - Recordatorio diario configurable localmente.
+- Notificacion local diaria para recordatorio de carga.
 - Inicio de Fase 8 de calidad con optimizacion de agregados mensuales, test de volumen alto y compatibilidad de backups previos sin cuentas.
-- Target de UI tests para smoke tests de dashboard/gastos, con store SwiftData en memoria durante ejecucion de pruebas.
-- Test de esquema SwiftData actual con `ModelContainer` en memoria.
+- Optimizacion de presupuestos y resumen por cuenta para volumen alto de datos.
+- Identificadores de accesibilidad ampliados para pantallas, formularios y acciones principales.
+- UI tests activos para smoke tests de dashboard/gastos y navegacion principal, con store SwiftData en memoria durante ejecucion de pruebas.
+- Schema SwiftData versionado inicial con `ExpensesSchemaV1` y `ExpensesMigrationPlan`.
 
 ## Abrir en Xcode
 

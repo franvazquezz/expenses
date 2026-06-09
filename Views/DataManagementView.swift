@@ -69,36 +69,42 @@ struct DataManagementView: View {
                             } label: {
                                 Label("Exportar gastos", systemImage: "square.and.arrow.up")
                             }
+                            .accessibilityIdentifier("data.exportExpensesCSVButton")
 
                             Button {
                                 exportIncomesCSV()
                             } label: {
                                 Label("Exportar ingresos", systemImage: "square.and.arrow.up")
                             }
+                            .accessibilityIdentifier("data.exportIncomesCSVButton")
 
                             Button {
                                 exportMovementsExcel()
                             } label: {
                                 Label("Exportar Excel", systemImage: "tablecells.badge.ellipsis")
                             }
+                            .accessibilityIdentifier("data.exportExcelButton")
 
                             Button {
                                 importKind = .expensesCSV
                             } label: {
                                 Label("Importar gastos", systemImage: "square.and.arrow.down")
                             }
+                            .accessibilityIdentifier("data.importExpensesCSVButton")
 
                             Button {
                                 importKind = .incomesCSV
                             } label: {
                                 Label("Importar ingresos", systemImage: "square.and.arrow.down")
                             }
+                            .accessibilityIdentifier("data.importIncomesCSVButton")
 
                             Button {
                                 importKind = .bankCSV
                             } label: {
                                 Label("Importar banco", systemImage: "building.columns")
                             }
+                            .accessibilityIdentifier("data.importBankCSVButton")
                         }
                     }
 
@@ -108,6 +114,7 @@ struct DataManagementView: View {
                         } label: {
                             Label("Exportar movimientos", systemImage: "square.and.arrow.up")
                         }
+                        .accessibilityIdentifier("data.exportMovementsJSONButton")
                     }
 
                     AppPanel(title: "Backup local", systemImage: "archivebox") {
@@ -117,12 +124,14 @@ struct DataManagementView: View {
                             } label: {
                                 Label("Exportar backup", systemImage: "externaldrive.badge.plus")
                             }
+                            .accessibilityIdentifier("data.exportBackupButton")
 
                             Button {
                                 importKind = .backup
                             } label: {
                                 Label("Restaurar backup", systemImage: "externaldrive.badge.arrowtriangle.down")
                             }
+                            .accessibilityIdentifier("data.importBackupButton")
                         }
                     }
 
@@ -135,6 +144,7 @@ struct DataManagementView: View {
             }
         }
         .navigationTitle("Datos")
+        .accessibilityIdentifier("screen.data")
         .fileExporter(
             isPresented: $showingExporter,
             document: exportDocument,

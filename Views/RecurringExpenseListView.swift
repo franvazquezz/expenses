@@ -32,6 +32,7 @@ struct RecurringExpenseListView: View {
                 } label: {
                     Label("Generar pendientes", systemImage: "wand.and.stars")
                 }
+                .accessibilityIdentifier("recurringExpenses.generateDueButton")
             }
 
             if recurringExpenses.isEmpty {
@@ -45,6 +46,7 @@ struct RecurringExpenseListView: View {
             }
         }
         .navigationTitle("Recurrentes")
+        .accessibilityIdentifier("screen.recurringExpenses")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -52,6 +54,7 @@ struct RecurringExpenseListView: View {
                 } label: {
                     Label("Agregar recurrente", systemImage: "plus")
                 }
+                .accessibilityIdentifier("recurringExpenses.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddRecurringExpense) {

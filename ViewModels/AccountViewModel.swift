@@ -38,6 +38,11 @@ struct BaseCurrencyNetWorth {
     let missingCurrencies: [String]
 }
 
+private struct AccountMovementKey: Hashable {
+    let accountID: UUID
+    let currency: String
+}
+
 final class AccountViewModel: ObservableObject {
     @Published var name = ""
     @Published var institution = ""
@@ -126,23 +131,22 @@ final class AccountViewModel: ObservableObject {
     }
 
     static func summaryTotals(from accounts: [Account], includeInactive: Bool = false) -> [NetWorthTotal] {
-        let visibleAccounts = accounts.filter { includeInactive || $0.isActive }
-        let currencies = Set(visibleAccounts.map(\.currency))
+        let totalsByCurrency = accounts
+            .filter { includeInactive || $0.isActive }
+            .reduce(into: [String: (assets: Double, liabilities: Double)]()) { totals, account in
+                if account.type == .asset {
+                    totals[account.currency, default: (assets: 0, liabilities: 0)].assets += account.balance
+                } else {
+                    totals[account.currency, default: (assets: 0, liabilities: 0)].liabilities += account.balance
+                }
+            }
 
-        return currencies
-            .map { currency in
-                let accountsForCurrency = visibleAccounts.filter { $0.currency == currency }
-                let assets = accountsForCurrency
-                    .filter { $0.type == .asset }
-                    .reduce(0) { $0 + $1.balance }
-                let liabilities = accountsForCurrency
-                    .filter { $0.type == .liability }
-                    .reduce(0) { $0 + $1.balance }
-
-                return NetWorthTotal(
+        return totalsByCurrency
+            .map { currency, totals in
+                NetWorthTotal(
                     currency: currency,
-                    assets: assets,
-                    liabilities: liabilities
+                    assets: totals.assets,
+                    liabilities: totals.liabilities
                 )
             }
             .sorted { $0.currency < $1.currency }
@@ -166,29 +170,35 @@ final class AccountViewModel: ObservableObject {
         incomes: [Income],
         includeInactive: Bool = false
     ) -> [AccountMovementSummary] {
-        accounts
+        let expenseTotals = expenses
+            .reduce(into: [AccountMovementKey: Double]()) { totals, expense in
+                guard expense.isConfirmed, let accountID = expense.accountID else {
+                    return
+                }
+
+                let key = AccountMovementKey(accountID: accountID, currency: expense.originalCurrency)
+                totals[key, default: 0] += expense.originalAmount
+            }
+        let incomeTotals = incomes
+            .reduce(into: [AccountMovementKey: Double]()) { totals, income in
+                guard income.isConfirmed, let accountID = income.accountID else {
+                    return
+                }
+
+                let key = AccountMovementKey(accountID: accountID, currency: income.originalCurrency)
+                totals[key, default: 0] += income.originalAmount
+            }
+
+        return accounts
             .filter { includeInactive || $0.isActive }
             .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
             .map { account in
-                let expenseTotal = expenses
-                    .filter {
-                        $0.isConfirmed &&
-                        $0.accountID == account.id &&
-                        $0.originalCurrency == account.currency
-                    }
-                    .reduce(0) { $0 + $1.originalAmount }
-                let incomeTotal = incomes
-                    .filter {
-                        $0.isConfirmed &&
-                        $0.accountID == account.id &&
-                        $0.originalCurrency == account.currency
-                    }
-                    .reduce(0) { $0 + $1.originalAmount }
+                let key = AccountMovementKey(accountID: account.id, currency: account.currency)
 
                 return AccountMovementSummary(
                     account: account,
-                    incomeTotal: incomeTotal,
-                    expenseTotal: expenseTotal
+                    incomeTotal: incomeTotals[key] ?? 0,
+                    expenseTotal: expenseTotals[key] ?? 0
                 )
             }
     }

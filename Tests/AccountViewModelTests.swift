@@ -151,4 +151,90 @@ final class AccountViewModelTests: XCTestCase {
         XCTAssertEqual(result.total, 100000)
         XCTAssertEqual(result.missingCurrencies, ["EUR"])
     }
+
+    func testMovementSummariesHandleLargeDataSet() {
+        let accounts = (0..<300).map { index in
+            Account(
+                name: "Cuenta \(index)",
+                type: .asset,
+                category: "Cuenta bancaria",
+                currency: index % 2 == 0 ? "ARS" : "USD",
+                balance: 0
+            )
+        }
+        let expenses = (0..<12_000).map { index in
+            let account = accounts[index % accounts.count]
+            return Expense(
+                amount: 10,
+                currency: account.currency,
+                date: Date(),
+                category: "Comida",
+                isConfirmed: index % 5 != 0,
+                accountID: account.id
+            )
+        }
+        let incomes = (0..<6_000).map { index in
+            let account = accounts[index % accounts.count]
+            return Income(
+                amount: 20,
+                currency: account.currency,
+                date: Date(),
+                category: "Sueldo",
+                isConfirmed: index % 7 != 0,
+                accountID: account.id
+            )
+        }
+
+        let summaries = AccountViewModel.movementSummaries(
+            accounts: accounts,
+            expenses: expenses,
+            incomes: incomes
+        )
+
+        XCTAssertEqual(summaries.count, accounts.count)
+        XCTAssertTrue(summaries.contains { $0.expenseTotal > 0 })
+        XCTAssertTrue(summaries.contains { $0.incomeTotal > 0 })
+    }
+
+    func testMovementSummariesPerformanceWithLargeDataSet() {
+        let accounts = (0..<300).map { index in
+            Account(
+                name: "Cuenta \(index)",
+                type: .asset,
+                category: "Cuenta bancaria",
+                currency: index % 2 == 0 ? "ARS" : "USD",
+                balance: 0
+            )
+        }
+        let expenses = (0..<12_000).map { index in
+            let account = accounts[index % accounts.count]
+            return Expense(
+                amount: 10,
+                currency: account.currency,
+                date: Date(),
+                category: "Comida",
+                isConfirmed: index % 5 != 0,
+                accountID: account.id
+            )
+        }
+        let incomes = (0..<6_000).map { index in
+            let account = accounts[index % accounts.count]
+            return Income(
+                amount: 20,
+                currency: account.currency,
+                date: Date(),
+                category: "Sueldo",
+                isConfirmed: index % 7 != 0,
+                accountID: account.id
+            )
+        }
+
+        measure {
+            _ = AccountViewModel.movementSummaries(
+                accounts: accounts,
+                expenses: expenses,
+                incomes: incomes
+            )
+        }
+    }
 }

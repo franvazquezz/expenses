@@ -32,7 +32,7 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - CloudKit queda pospuesto hasta cerrar patrimonio y una ronda de calidad.
 - La Fase 8 de calidad comienza por optimizar y medir agregados del dashboard antes de incorporar UI tests y migraciones SwiftData reales.
 - Los UI tests quedan en un target separado `expensesUITests`; la app usa SwiftData en memoria cuando se lanza con `EXPENSES_UI_TESTING=1`.
-- El scheme principal compila el target de UI tests, pero los omite en ejecucion porque la automatizacion de macOS debe estar habilitada localmente para que el runner inicialice.
+- El scheme principal ejecuta unit tests y UI tests. Los UI tests crean una ventana con `Command + N` al iniciar para evitar fallos por restauracion de estado de macOS sin ventanas abiertas.
 - La exportacion JSON de movimientos queda separada del backup completo: incluye gastos e ingresos para analisis o intercambio, sin presupuestos, monedas, cotizaciones, recurrencias ni cuentas como entidades independientes.
 - La Fase 9 de busquedas del roadmap detallado ya esta cubierta por los filtros existentes de texto, fecha/mes, categoria, moneda, cuenta y metodo de pago.
 - La exportacion Excel se resuelve sin dependencias externas mediante XML Spreadsheet 2003 compatible con Excel, guardado como `.xls`.
@@ -40,9 +40,12 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - La persistencia queda centralizada en `AppPersistenceService`: usa memoria para UI tests, store local por defecto y CloudKit privado solo cuando readiness confirma Bundle ID estable, Apple Developer Team, contenedor iCloud y capability habilitada.
 - La configuracion de readiness se lee desde claves generadas en `Info.plist` por Xcode: `EXPENSESDevelopmentTeam`, `EXPENSESCloudKitContainerIdentifier` y `EXPENSESCloudKitEnabled`.
 - La Fase 11 queda implementada como funciones avanzadas locales: objetivos de ahorro, comparacion mensual, alertas calculadas y recordatorio diario configurable.
-- El recordatorio diario se guarda como preferencia local en SwiftData, pero no agenda notificaciones del sistema hasta definir permisos/entitlements y experiencia de autorizacion.
+- El recordatorio diario se guarda como preferencia local en SwiftData y agenda una notificacion local diaria con `UserNotifications` cuando el usuario lo activa.
 - Las alertas de presupuesto y gasto inusual son derivadas en view models; no se persisten como eventos para evitar estado duplicado.
 - Los backups JSON incluyen objetivos de ahorro y configuracion de recordatorio, manteniendo compatibilidad con backups previos sin esos campos.
+- La revision de rendimiento posterior a Fase 11 optimiza agregados de presupuestos y resumen por cuenta usando diccionarios de acumulacion para evitar recorridas anidadas con alto volumen.
+- La revision de accesibilidad programatica amplia identificadores de pantallas, formularios y acciones principales para facilitar UI tests y automatizacion futura.
+- La persistencia usa `ExpensesSchemaV1` y `ExpensesMigrationPlan` como base versionada inicial de SwiftData, sin etapas de migracion todavia porque no hay version previa versionada que migrar.
 
 ## Funcionalidades implementadas
 
@@ -107,6 +110,7 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - [x] Alertas de presupuesto superado.
 - [x] Alertas de gasto inusual basadas en promedio historico por categoria y moneda.
 - [x] Recordatorio de carga diaria configurable localmente.
+- [x] Notificacion local diaria para recordatorio de carga cuando esta activado.
 - [x] Backup y restauracion de objetivos de ahorro y recordatorio diario.
 - [x] Tests unitarios iniciales para view models.
 - [x] Tests unitarios para presupuestos, ingresos y recurrencias.
@@ -122,6 +126,15 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - [x] Tests unitarios para objetivos de ahorro, alertas avanzadas y comparacion mensual.
 - [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto de datos.
 - [x] Test unitario de volumen alto para agregados mensuales del dashboard.
+- [x] Optimizacion de progreso de presupuestos para volumen alto de movimientos.
+- [x] Optimizacion de resumen de movimientos por cuenta para volumen alto de datos.
+- [x] Tests unitarios de volumen y performance para presupuestos y resumen por cuenta.
+- [x] Identificadores de accesibilidad ampliados para pantallas, formularios y acciones principales.
+- [x] Ejecucion de UI tests dentro del scheme principal con automatizacion macOS habilitada.
+- [x] Smoke test de navegacion por pantallas principales.
+- [x] Plan de migracion SwiftData versionado inicial con `ExpensesSchemaV1`.
+- [x] Test unitario para el plan de migracion SwiftData versionado inicial.
+- [x] Tests unitarios para calculo de proxima notificacion diaria.
 - [x] Test de compatibilidad para backups previos sin cuentas de patrimonio.
 - [x] Target de UI tests con smoke tests de dashboard, navegacion a gastos y apertura de alta de gasto.
 - [x] Test de esquema SwiftData actual con `ModelContainer` en memoria.
@@ -130,32 +143,28 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 
 ## Funcionalidades pendientes
 
-- [ ] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
-- [ ] Tests de migracion SwiftData versionada cuando se defina `SchemaMigrationPlan`.
-- [ ] Revision completa de accesibilidad.
-- [ ] Revision general de rendimiento con volumen alto de datos.
-- [ ] Definir si el recordatorio diario debe usar notificaciones del sistema y solicitar permisos.
+- [ ] Validacion manual de accesibilidad con VoiceOver y navegacion por teclado.
 - [ ] Activar CloudKit real con entitlements, Apple Developer Team y contenedor iCloud.
 - [ ] Sincronizacion entre Macs.
 
 ## Proximos pasos
 
-1. Continuar calidad: ejecucion real de UI tests con automatizacion macOS habilitada, migraciones SwiftData versionadas, accesibilidad y revision general de rendimiento.
-2. Definir si los recordatorios diarios pasan de configuracion local a notificaciones del sistema.
-3. Retomar CloudKit: Apple Developer Team, Bundle ID final, contenedor iCloud y capability iCloud + CloudKit.
-4. Activar `EXPENSES_CLOUDKIT_ENABLED`, configurar entitlements reales y validar sincronizacion entre Macs.
+1. Validar accesibilidad manual con VoiceOver y navegacion por teclado.
+2. Retomar CloudKit cuando se decida hacerlo: Apple Developer Team, Bundle ID final, contenedor iCloud y capability iCloud + CloudKit.
+3. Activar `EXPENSES_CLOUDKIT_ENABLED`, configurar entitlements reales y validar sincronizacion entre Macs.
+4. Cuando cambien modelos SwiftData, agregar una nueva version de schema y una etapa concreta en `ExpensesMigrationPlan`.
 
 ## Problemas conocidos
 
-- Al agregar nuevos modelos SwiftData, una base local creada con una version anterior puede requerir migracion o recreacion del store durante desarrollo.
+- Al agregar nuevos modelos SwiftData, se debe crear una nueva version de schema y una etapa de migracion desde `ExpensesSchemaV1`; durante desarrollo, bases locales viejas no versionadas pueden requerir recreacion del store.
 - La sincronizacion real esta bloqueada por configuracion de firma/iCloud fuera del codigo fuente actual: Apple Developer Team, Bundle ID estable, contenedor iCloud, capability y entitlements.
 - La restauracion de backup local importa registros y omite monedas/cotizaciones ya existentes; no reemplaza destructivamente la base actual.
 - Los saldos de cuentas se impactan automaticamente solo desde movimientos confirmados asociados a cuenta; no hay conciliacion contra extractos bancarios.
 - Si una base local previa no tiene `accountID` en gastos o ingresos, esos movimientos quedan sin cuenta asociada.
-- Los UI tests compilan, pero la ejecucion local puede fallar con `Timed out while enabling automation mode` hasta habilitar permisos de automatizacion/accesibilidad para Xcode.
+- Los UI tests requieren permisos de automatizacion/accesibilidad para Xcode en macOS; sin esos permisos el runner puede fallar antes de interactuar con la app.
 - La exportacion Excel genera XML Spreadsheet 2003, no `.xlsx` nativo, para evitar dependencias externas.
 - Los CSV bancarios de bancos reales deben normalizarse al encabezado soportado antes de importarse.
-- El recordatorio diario no dispara notificaciones del sistema; solo queda configurado y visible dentro de la app.
+- El recordatorio diario usa notificaciones locales del sistema y solicita autorizacion al activarse; si el usuario deniega permisos, se cancela la notificacion pendiente.
 
 ## Notas para futuras sesiones
 

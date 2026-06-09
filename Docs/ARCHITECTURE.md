@@ -18,6 +18,7 @@ Contiene entidades persistidas con SwiftData.
 - `Account`: representa una cuenta, activo o pasivo con saldo manual, moneda, categoria, institucion y estado activo.
 - `SavingsGoal`: representa un objetivo de ahorro con monto objetivo, avance, moneda, fecha opcional y estado activo.
 - `DailyReminderSettings`: representa la configuracion local del recordatorio diario.
+- `ExpensesSchemaV1`: define el schema versionado inicial de SwiftData para todos los modelos persistidos.
 
 ### ViewModels
 
@@ -45,6 +46,7 @@ Contiene logica compartida que no depende de SwiftUI.
 - `DataTransferService`: exporta/importa CSV de gastos e ingresos, exporta movimientos en Excel y JSON, importa CSV bancario normalizado, valida importaciones y genera/restaura backups JSON.
 - `AccountImpactService`: aplica y revierte el impacto de gastos e ingresos confirmados sobre saldos de cuentas.
 - `AppPersistenceService`: centraliza el `ModelContainer`; usa memoria para UI tests, SwiftData local por defecto y CloudKit privado solo cuando readiness esta completa.
+- `ReminderNotificationService`: agenda o cancela la notificacion local diaria del recordatorio de carga.
 
 ### Views
 
@@ -75,6 +77,8 @@ La persistencia se configura en `expensesApp` a traves de `AppPersistenceService
 ```
 
 SwiftData administra el almacenamiento. No hay backend ni login; cuando CloudKit este activado, la identidad dependera de iCloud. La app usa store local por defecto, store en memoria para UI tests y `ModelConfiguration` con CloudKit privado solo si la configuracion de readiness esta completa.
+
+El schema actual queda versionado en `ExpensesSchemaV1` y se instala mediante `ExpensesMigrationPlan`. La version inicial no define etapas de migracion porque no existe una version previa versionada; el proximo cambio incompatible de modelos debe agregar un nuevo schema y una etapa explicita.
 
 ## Multi-moneda
 
@@ -158,6 +162,8 @@ porcentaje = consumido / presupuesto
 
 La app inicia con ejemplos para Comida, Transporte y Ocio usando la moneda principal.
 
+Para volumen alto, el progreso de presupuestos acumula primero gastos confirmados por categoria y moneda en un diccionario, y luego resuelve cada presupuesto contra esa tabla. Esto evita recorrer todos los gastos por cada presupuesto.
+
 ## Patrimonio
 
 La app modela patrimonio con cuentas manuales. Cada `Account` guarda:
@@ -189,6 +195,8 @@ Los movimientos pueden asociarse opcionalmente a una cuenta activa de la misma m
 
 `NetWorthView` incluye un dashboard analitico por cuenta que muestra saldo actual, ingresos confirmados, gastos confirmados y flujo neto. Estos agregados usan la moneda propia de cada cuenta y no consolidan divisas.
 
+Para volumen alto, el resumen de movimientos por cuenta acumula ingresos y gastos confirmados por `accountID` y moneda original antes de construir las filas por cuenta. Esto mantiene el calculo lineal respecto de cuentas y movimientos.
+
 ## Funciones avanzadas
 
 La Fase 11 agrega funciones locales sobre los datos existentes:
@@ -199,7 +207,7 @@ La Fase 11 agrega funciones locales sobre los datos existentes:
 - Alertas de gasto inusual cuando un gasto del mes actual supera el promedio historico de su categoria y moneda.
 - Recordatorio diario configurable en `DailyReminderSettings`.
 
-Las alertas no se guardan en SwiftData: se calculan desde movimientos confirmados para evitar inconsistencias. El recordatorio diario todavia no agenda notificaciones del sistema; solo persiste la preferencia local hasta definir permisos y entitlements.
+Las alertas no se guardan en SwiftData: se calculan desde movimientos confirmados para evitar inconsistencias. El recordatorio diario usa `ReminderNotificationService` para solicitar autorizacion de `UserNotifications` al activarse y reemplazar la notificacion pendiente con un trigger diario.
 
 ## Gastos recurrentes
 

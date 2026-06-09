@@ -25,6 +25,9 @@ Para esta fase, la logica importante esta en los view models y se puede probar c
 - Importacion CSV bancaria normalizada.
 - Agregados mensuales del dashboard con volumen alto de movimientos.
 - Objetivos de ahorro, alertas avanzadas y comparacion mensual.
+- Progreso de presupuestos y resumen por cuenta con volumen alto de movimientos.
+- Plan de migracion SwiftData versionado inicial.
+- Calculo de proxima notificacion diaria.
 
 ## Ejecutar tests
 
@@ -57,6 +60,7 @@ Los tests iniciales cubren los view models. Las vistas SwiftUI quedan fuera de t
 - `DataTransferServiceTests`
 - `SyncReadinessServiceTests`
 - `AppPersistenceServiceTests`
+- `ReminderNotificationServiceTests`
 - `AccountViewModelTests`
 - `AccountImpactServiceTests`
 - `SwiftDataModelTests`
@@ -115,7 +119,8 @@ La Fase 8 agrega tests para:
 - Validar agregados mensuales del dashboard con miles de gastos e ingresos.
 - Medir performance de `monthlyMovementTotals(expenses:incomes:monthsBack:)` como base para futuras revisiones de rendimiento.
 - Crear un `ModelContainer` en memoria con el esquema SwiftData actual e insertar los modelos principales.
-- Compilar un target de UI tests con smoke tests para dashboard, navegacion a gastos y apertura de alta de gasto.
+- Validar `ExpensesSchemaV1` y `ExpensesMigrationPlan` como schema versionado inicial.
+- Ejecutar UI tests con smoke tests para dashboard, navegacion a gastos, apertura de alta de gasto y navegacion por pantallas principales.
 
 La Fase 10 agrega tests para:
 
@@ -130,15 +135,21 @@ La Fase 11 agrega tests para:
 - Detectar gastos inusuales por promedio historico de categoria y moneda.
 - Comparar ingresos, gastos y balance contra el mes anterior.
 - Incluir objetivos de ahorro y recordatorio diario en backups.
+- Calcular la proxima fecha de disparo del recordatorio diario.
 
-El scheme principal compila `expensesUITests`, pero los marca como omitidos para la ejecucion por defecto. En macOS, la ejecucion de UI tests requiere permisos de automatizacion/accesibilidad para Xcode; sin esos permisos el runner puede fallar con `Timed out while enabling automation mode`.
+La revision de calidad posterior agrega tests para:
 
-Para validar compilacion de unit tests y UI tests:
+- Validar progreso de presupuestos con miles de gastos.
+- Medir performance de `BudgetViewModel.progress(for:expenses:month:includeInactive:)`.
+- Validar resumen de movimientos por cuenta con cientos de cuentas y miles de movimientos.
+- Medir performance de `AccountViewModel.movementSummaries(accounts:expenses:incomes:includeInactive:)`.
+
+El scheme principal ejecuta `expensesUITests`. En macOS, la ejecucion de UI tests requiere permisos de automatizacion/accesibilidad para Xcode; sin esos permisos el runner puede fallar antes de interactuar con la app. Los UI tests fuerzan una ventana nueva con `Command + N` para evitar falsos negativos si macOS restaura la app sin ventanas abiertas.
+
+Para validar compilacion de unit tests y UI tests sin ejecutarlos:
 
 ```bash
 xcodebuild build-for-testing -project expenses.xcodeproj -scheme expenses -destination 'platform=macOS'
 ```
 
-Para ejecutar tambien UI tests, habilitar automatizacion de macOS para Xcode y quitar el skip del testable `expensesUITests` en el scheme.
-
-Quedan pendientes migraciones SwiftData versionadas, revision completa de accesibilidad y revision general de rendimiento.
+Queda pendiente la validacion manual de accesibilidad con VoiceOver.

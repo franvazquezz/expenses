@@ -69,6 +69,7 @@ struct SyncSettingsView: View {
             }
         }
         .navigationTitle("Sincronizacion")
+        .accessibilityIdentifier("screen.sync")
     }
 
     private var persistenceModeDetail: String {

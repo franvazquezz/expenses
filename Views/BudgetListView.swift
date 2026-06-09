@@ -39,6 +39,7 @@ struct BudgetListView: View {
             }
         }
         .navigationTitle("Presupuestos")
+        .accessibilityIdentifier("screen.budgets")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -46,6 +47,7 @@ struct BudgetListView: View {
                 } label: {
                     Label("Agregar presupuesto", systemImage: "plus")
                 }
+                .accessibilityIdentifier("budgets.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddBudget) {
@@ -70,6 +72,7 @@ struct BudgetListView: View {
             } label: {
                 Label("Agregar", systemImage: "plus.circle.fill")
             }
+            .accessibilityIdentifier("budgets.addButton")
         }
     }
 

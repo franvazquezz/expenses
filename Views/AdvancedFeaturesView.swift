@@ -41,9 +41,17 @@ struct AdvancedFeaturesView: View {
             .padding()
         }
         .navigationTitle("Funciones avanzadas")
+        .accessibilityIdentifier("screen.advanced")
         .onAppear {
             if let seededSettings = AdvancedFeaturesViewModel.seedReminderSettingsIfNeeded(in: reminderSettings) {
                 modelContext.insert(seededSettings)
+                Task {
+                    await ReminderNotificationService.sync(
+                        isEnabled: seededSettings.isEnabled,
+                        hour: seededSettings.hour,
+                        minute: seededSettings.minute
+                    )
+                }
             }
         }
         .sheet(isPresented: $showingAddGoal) {
@@ -135,8 +143,18 @@ struct AdvancedFeaturesView: View {
                     set: { newValue in
                         settings.isEnabled = newValue
                         settings.updatedAt = Date()
+                        let hour = settings.hour
+                        let minute = settings.minute
+                        Task {
+                            await ReminderNotificationService.sync(
+                                isEnabled: newValue,
+                                hour: hour,
+                                minute: minute
+                            )
+                        }
                     }
                 ))
+                .accessibilityIdentifier("advanced.reminderToggle")
 
                 DatePicker(
                     "Hora",
@@ -147,6 +165,7 @@ struct AdvancedFeaturesView: View {
                     displayedComponents: .hourAndMinute
                 )
                 .disabled(!settings.isEnabled)
+                .accessibilityIdentifier("advanced.reminderTimePicker")
             } else {
                 Text("La configuracion se inicializara automaticamente al abrir esta pantalla.")
                     .foregroundStyle(.secondary)
@@ -168,6 +187,16 @@ struct AdvancedFeaturesView: View {
         settings.hour = components.hour ?? settings.hour
         settings.minute = components.minute ?? settings.minute
         settings.updatedAt = Date()
+        let isEnabled = settings.isEnabled
+        let hour = settings.hour
+        let minute = settings.minute
+        Task {
+            await ReminderNotificationService.sync(
+                isEnabled: isEnabled,
+                hour: hour,
+                minute: minute
+            )
+        }
     }
 }
 
@@ -197,12 +226,15 @@ struct SavingsGoalFormView: View {
             Form {
                 TextField("Nombre", text: $viewModel.name)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("savingsGoalForm.nameField")
 
                 TextField("Monto objetivo", text: $viewModel.targetAmountText)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("savingsGoalForm.targetAmountField")
 
                 TextField("Monto actual", text: $viewModel.currentAmountText)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("savingsGoalForm.currentAmountField")
 
                 Picker("Moneda", selection: $viewModel.currency) {
                     ForEach(activeCurrencies) { currency in
@@ -393,4 +425,3 @@ private struct AlertRow: View {
         }
     }
 }
-

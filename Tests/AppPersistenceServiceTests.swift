@@ -1,3 +1,4 @@
+import SwiftData
 import XCTest
 @testable import expenses
 
@@ -32,6 +33,13 @@ final class AppPersistenceServiceTests: XCTestCase {
         )
 
         XCTAssertEqual(mode, .cloudKit(containerIdentifier: "iCloud.com.pancho.expenses"))
+    }
+
+    func testMigrationPlanDefinesCurrentSchemaVersion() {
+        XCTAssertEqual(ExpensesMigrationPlan.schemas.count, 1)
+        XCTAssertEqual(ExpensesSchemaV1.versionIdentifier, Schema.Version(1, 0, 0))
+        XCTAssertEqual(ExpensesSchemaV1.models.count, 10)
+        XCTAssertTrue(ExpensesMigrationPlan.stages.isEmpty)
     }
 
     private func readyCloudKitInput() -> SyncReadinessInput {

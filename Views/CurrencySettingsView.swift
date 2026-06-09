@@ -30,6 +30,7 @@ struct CurrencySettingsView: View {
             .padding()
         }
         .navigationTitle("Monedas")
+        .accessibilityIdentifier("screen.currencies")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -37,6 +38,7 @@ struct CurrencySettingsView: View {
                 } label: {
                     Label("Agregar moneda", systemImage: "plus")
                 }
+                .accessibilityIdentifier("currencies.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddCurrency) {
@@ -83,6 +85,7 @@ struct CurrencySettingsView: View {
                 } label: {
                     Label("Agregar", systemImage: "plus.circle")
                 }
+                .accessibilityIdentifier("currencies.addButton")
             }
 
             Table(currencies) {
@@ -157,6 +160,7 @@ struct CurrencySettingsView: View {
                 } label: {
                     Label("Agregar", systemImage: "plus.circle")
                 }
+                .accessibilityIdentifier("exchangeRates.addButton")
             }
 
             Table(exchangeRates) {

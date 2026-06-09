@@ -96,4 +96,57 @@ final class BudgetViewModelTests: XCTestCase {
         XCTAssertEqual(progress.first?.remaining, 300000)
         XCTAssertEqual(progress.first?.percentage, 0)
     }
+
+    func testProgressHandlesLargeDataSet() {
+        let date = Date()
+        let budgets = ExpenseCategories.all.map { category in
+            Budget(category: category, amount: 1_000_000, currency: "ARS", monthStart: date)
+        }
+        let expenses = (0..<20_000).map { index in
+            Expense(
+                amount: 100,
+                currency: "ARS",
+                convertedAmount: 100,
+                baseCurrency: "ARS",
+                date: date,
+                category: ExpenseCategories.all[index % ExpenseCategories.all.count],
+                isConfirmed: index % 7 != 0
+            )
+        }
+
+        let progress = BudgetViewModel.progress(
+            for: budgets,
+            expenses: expenses,
+            month: MonthFilter(containing: date)
+        )
+
+        XCTAssertEqual(progress.count, budgets.count)
+        XCTAssertTrue(progress.allSatisfy { $0.consumed > 0 })
+    }
+
+    func testProgressPerformanceWithLargeDataSet() {
+        let date = Date()
+        let budgets = ExpenseCategories.all.map { category in
+            Budget(category: category, amount: 1_000_000, currency: "ARS", monthStart: date)
+        }
+        let expenses = (0..<20_000).map { index in
+            Expense(
+                amount: 100,
+                currency: "ARS",
+                convertedAmount: 100,
+                baseCurrency: "ARS",
+                date: date,
+                category: ExpenseCategories.all[index % ExpenseCategories.all.count],
+                isConfirmed: index % 7 != 0
+            )
+        }
+
+        measure {
+            _ = BudgetViewModel.progress(
+                for: budgets,
+                expenses: expenses,
+                month: MonthFilter(containing: date)
+            )
+        }
+    }
 }
