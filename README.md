@@ -2,6 +2,20 @@
 
 App nativa para macOS hecha con SwiftUI y SwiftData para registrar y analizar gastos personales.
 
+Nota: el roadmap actual plantea una transicion futura al stack web habitual con Next.js, Prisma, base relacional y login por Google/GitHub, manteniendo esta app macOS como implementacion actual y referencia para migracion de datos.
+
+## App web en migracion
+
+La Fase 14 ya esta iniciada en [web](/Users/franciscovazquez/Pancho/Repos/expenses/web):
+
+- Next.js App Router.
+- Prisma 7 con PostgreSQL como base objetivo.
+- Auth.js con proveedores Google y GitHub configurables por variables de entorno.
+- Schema Prisma inicial equivalente al modelo SwiftData actual.
+- Entidades personales aisladas por `userId`.
+
+Ver instrucciones especificas en [web/README.md](/Users/franciscovazquez/Pancho/Repos/expenses/web/README.md).
+
 ## Estado actual
 
 Fases 1 a 11 implementadas en modo local:

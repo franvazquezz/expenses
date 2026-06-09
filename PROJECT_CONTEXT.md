@@ -46,6 +46,17 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - La revision de rendimiento posterior a Fase 11 optimiza agregados de presupuestos y resumen por cuenta usando diccionarios de acumulacion para evitar recorridas anidadas con alto volumen.
 - La revision de accesibilidad programatica amplia identificadores de pantallas, formularios y acciones principales para facilitar UI tests y automatizacion futura.
 - La persistencia usa `ExpensesSchemaV1` y `ExpensesMigrationPlan` como base versionada inicial de SwiftData, sin etapas de migracion todavia porque no hay version previa versionada que migrar.
+- Se plantea un cambio de rumbo hacia el stack web habitual del usuario: Next.js + Prisma + base relacional, manteniendo la app SwiftUI/SwiftData como implementacion actual y referencia de datos hasta completar una migracion validada.
+- La transicion a Next + Prisma debe preservar reglas existentes: importes por moneda sin sumas cruzadas, cotizaciones manuales, movimientos pendientes/confirmados, impacto en cuentas, recurrencias, presupuestos, objetivos, backups e importaciones/exportaciones.
+- PostgreSQL queda como base de datos preferida para Prisma salvo que se decida otra restriccion operativa antes del scaffold.
+- La version web incorporara usuario y login con proveedores Google y GitHub. El email verificado sera dato de contacto/identidad visible, pero el aislamiento de datos debe depender de `userId`, no solo del email.
+- El linking entre Google y GitHub para un mismo usuario debe tratarse de forma explicita para evitar unir cuentas por error.
+- Se inicia Fase 14 con una app Next.js separada en `web/`, para mantener intacta la app macOS durante la transicion.
+- La base web usa Prisma 7, PostgreSQL, Auth.js/NextAuth beta y adapter Prisma.
+- El esquema Prisma inicial incluye `User`, tablas OAuth, monedas, cotizaciones, gastos, ingresos, cuentas patrimoniales como `FinancialAccount`, presupuestos, recurrencias, objetivos y recordatorio diario.
+- Las cuentas patrimoniales se llaman `FinancialAccount` porque `Account` queda reservado para las cuentas OAuth de Auth.js.
+- El login queda configurado para Google y GitHub mediante variables `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `AUTH_GITHUB_ID` y `AUTH_GITHUB_SECRET`; sin credenciales, los botones quedan deshabilitados.
+- El cliente Prisma generado queda fuera del versionado y se regenera con `pnpm prisma:generate` o durante `pnpm build`.
 
 ## Funcionalidades implementadas
 
@@ -146,13 +157,24 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - [ ] Validacion manual de accesibilidad con VoiceOver y navegacion por teclado.
 - [ ] Activar CloudKit real con entitlements, Apple Developer Team y contenedor iCloud.
 - [ ] Sincronizacion entre Macs.
+- [x] Roadmap de migracion a Next.js + Prisma.
+- [x] Login web con Google.
+- [x] Login web con GitHub.
+- [x] Modelo de usuario y cuentas OAuth.
+- [x] Aislamiento de datos personales por usuario.
+- [x] Schema Prisma equivalente al modelo SwiftData actual.
+- [ ] Importador desde backup JSON actual hacia Prisma.
+- [ ] MVP web con dashboard, movimientos, cuentas, presupuestos y recurrencias.
 
 ## Proximos pasos
 
-1. Validar accesibilidad manual con VoiceOver y navegacion por teclado.
-2. Retomar CloudKit cuando se decida hacerlo: Apple Developer Team, Bundle ID final, contenedor iCloud y capability iCloud + CloudKit.
-3. Activar `EXPENSES_CLOUDKIT_ENABLED`, configurar entitlements reales y validar sincronizacion entre Macs.
-4. Cuando cambien modelos SwiftData, agregar una nueva version de schema y una etapa concreta en `ExpensesMigrationPlan`.
+1. Crear la primera migracion Prisma contra una base PostgreSQL local o de desarrollo.
+2. Configurar credenciales reales de Google y GitHub para validar OAuth end-to-end.
+3. Definir linking explicito entre Google y GitHub para un mismo usuario.
+4. Crear importador desde backup JSON actual y tests de compatibilidad de datos, asignando registros al usuario inicial.
+5. Implementar MVP web con dashboard, gastos, ingresos, cuentas, presupuestos y recurrencias.
+6. Validar totales por moneda, saldos de cuentas, patrimonio neto y recurrentes pendientes contra la app macOS antes de cortar la carga en SwiftData.
+7. Retomar CloudKit solo si se decide mantener la app macOS como producto activo independiente.
 
 ## Problemas conocidos
 
@@ -165,10 +187,16 @@ App nativa de macOS para registrar y analizar gastos personales. La primera vers
 - La exportacion Excel genera XML Spreadsheet 2003, no `.xlsx` nativo, para evitar dependencias externas.
 - Los CSV bancarios de bancos reales deben normalizarse al encabezado soportado antes de importarse.
 - El recordatorio diario usa notificaciones locales del sistema y solicita autorizacion al activarse; si el usuario deniega permisos, se cancela la notificacion pendiente.
+- La migracion a Next + Prisma ya tiene scaffold y schema inicial; el riesgo principal pasa a ser validar equivalencia contra backups reales y no perder reglas de negocio durante el MVP.
+- La autenticacion web usa Auth.js/NextAuth con Google y GitHub, pero falta configurar credenciales OAuth reales.
+- GitHub puede no exponer un email publico en algunos perfiles; no se debe usar el email como unica clave tecnica para unir usuarios.
+- La primera migracion Prisma no fue creada todavia porque falta una base PostgreSQL de desarrollo para ejecutar `prisma migrate dev`.
+- El login OAuth esta implementado a nivel de rutas y provider config, pero no fue validado contra Google/GitHub reales porque faltan credenciales.
 
 ## Notas para futuras sesiones
 
 - Antes de cambiar modelos SwiftData, revisar el impacto en migraciones.
+- Antes de iniciar el scaffold Next + Prisma, usar el roadmap de migracion como contrato de alcance y validar el schema contra backups reales.
 - Antes de sumar conversion de moneda, definir fuente de tipo de cambio y reglas de actualizacion.
 - Mantener sincronizados `README.md`, `Docs/ROADMAP.md`, `ROADMAP.md` y este archivo cuando cambie el estado del proyecto.
 - Para usar GitHub CLI desde esta sesion sin instalacion global, ejecutar `.tools/gh-cli` o agregar `.tools` al `PATH`.

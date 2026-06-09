@@ -187,8 +187,49 @@
 - [x] Tests de migracion SwiftData versionada inicial.
 - [ ] Validacion manual de accesibilidad con VoiceOver y navegacion por teclado.
 
+## Fase 14 - Transicion a stack web Next + Prisma
+
+Objetivo: pasar el producto al stack habitual basado en Next.js, Prisma y base relacional, conservando los datos y reglas ya implementadas en la app macOS.
+
+- [ ] Decidir si la version web reemplaza la app macOS o si ambas conviven temporalmente.
+- [x] Elegir base de datos objetivo para Prisma, preferentemente PostgreSQL.
+- [x] Incluir autenticacion como requisito de la version web: usuario de la app con login por Google y GitHub usando email verificado.
+- [x] Decidir si el login sera solo OAuth o si magic link/password queda para una fase posterior.
+- [ ] Definir alcance MVP web: dashboard, gastos, ingresos, cuentas, presupuestos, recurrencias, importacion/exportacion y backup.
+- [x] Mapear modelos SwiftData actuales a entidades Prisma, incluyendo `User` y cuentas de proveedor OAuth.
+- [x] Agregar `userId` a todas las entidades personales para aislar datos por usuario.
+- [x] Definir reglas de email: email verificado como dato de contacto, sin depender de que todos los proveedores devuelvan siempre el mismo correo.
+- [ ] Definir linking de Google y GitHub al mismo usuario solo con confirmacion explicita cuando corresponda.
+- [x] Definir IDs, tipos decimales, fechas, monedas, estados confirmado/pendiente y asociaciones entre movimientos y cuentas.
+- [x] Disenar schema Prisma inicial y migracion versionada.
+- [ ] Crear importador desde backup JSON actual hacia Prisma asignando datos a un usuario propietario.
+- [ ] Crear tests de compatibilidad de backups existentes.
+- [ ] Extraer reglas de dominio a servicios TypeScript puros: dashboard, presupuestos, patrimonio, recurrencias, alertas y conversiones manuales.
+- [x] Definir estructura Next.js con rutas, componentes, server actions/API routes, capa Prisma y tests.
+- [ ] Implementar MVP web con flujos principales de carga, edicion, listado y dashboard.
+- [ ] Reimplementar recurrencias con movimientos pendientes hasta confirmacion.
+- [ ] Reimplementar importacion/exportacion CSV, Excel compatible, JSON de movimientos y backup completo.
+- [ ] Reimplementar objetivos de ahorro, alertas calculadas y recordatorio persistido.
+- [ ] Reemplazar la estrategia CloudKit por decisiones de despliegue, backups, seguridad y sesiones de la app web.
+- [x] Implementar login con Google OAuth.
+- [x] Implementar login con GitHub OAuth.
+- [ ] Implementar perfil basico con email, proveedor vinculado, fecha de creacion y cierre de sesion.
+- [ ] Proteger rutas y mutaciones para que cada usuario vea y modifique solo sus datos.
+- [ ] Agregar tests unitarios, tests de integracion Prisma y e2e de flujos principales.
+- [ ] Validar experiencia desktop primero y mobile despues si se prioriza uso desde telefono.
+- [ ] Documentar variables de entorno, migraciones Prisma, seed, backup y restore.
+
+## Fase 15 - Cierre de migracion
+
+- [ ] Migrar datos desde un backup real de SwiftData.
+- [ ] Asignar datos migrados al usuario inicial y validar que no queden registros sin propietario.
+- [ ] Comparar totales por moneda entre app macOS y app web.
+- [ ] Comparar saldos de cuentas, patrimonio neto, presupuestos y recurrentes pendientes.
+- [ ] Definir fecha de corte para dejar de cargar datos en la app macOS.
+- [ ] Mantener la app macOS como referencia historica hasta validar la version web con datos reales.
+- [ ] Actualizar documentacion para marcar SwiftUI/SwiftData como implementacion anterior cuando la web pase a ser principal.
+
 ## Proximas fases posibles
 
-- Preferencias de moneda principal.
 - Conversion de moneda si se define fuente de tipo de cambio.
 - Conversion automatica con API: ExchangeRate API, Frankfurter u Open Exchange Rates.
