@@ -2,6 +2,7 @@ import SwiftUI
 
 struct SyncSettingsView: View {
     private let report = SyncReadinessService.evaluate(.projectDefault)
+    private let persistenceMode = AppPersistenceService.resolveMode()
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,6 +29,15 @@ struct SyncSettingsView: View {
                             Text("La app sigue usando persistencia local hasta completar estos requisitos.")
                                 .foregroundStyle(.secondary)
                         }
+
+                        Divider()
+
+                        Text("Persistencia activa: \(persistenceMode.title)")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                        Text(persistenceModeDetail)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
                     }
 
                     AppPanel(title: "Requisitos", systemImage: "list.bullet.clipboard") {
@@ -59,5 +69,16 @@ struct SyncSettingsView: View {
             }
         }
         .navigationTitle("Sincronizacion")
+    }
+
+    private var persistenceModeDetail: String {
+        switch persistenceMode {
+        case .inMemory:
+            "Modo temporal para pruebas automatizadas."
+        case .local:
+            "Los datos se guardan solo en este Mac."
+        case .cloudKit(let containerIdentifier):
+            "Los datos usan la base privada de CloudKit: \(containerIdentifier)."
+        }
     }
 }

@@ -20,7 +20,11 @@ Para esta fase, la logica importante esta en los view models y se puede probar c
 - Impacto de gastos e ingresos confirmados sobre saldos de cuentas.
 - Equivalente de patrimonio en moneda principal con cotizaciones manuales.
 - Compatibilidad de backups previos sin cuentas.
+- Exportacion Excel de movimientos.
+- Exportacion JSON de movimientos.
+- Importacion CSV bancaria normalizada.
 - Agregados mensuales del dashboard con volumen alto de movimientos.
+- Objetivos de ahorro, alertas avanzadas y comparacion mensual.
 
 ## Ejecutar tests
 
@@ -52,8 +56,12 @@ Los tests iniciales cubren los view models. Las vistas SwiftUI quedan fuera de t
 - `IncomeListViewModelTests`
 - `DataTransferServiceTests`
 - `SyncReadinessServiceTests`
+- `AppPersistenceServiceTests`
 - `AccountViewModelTests`
 - `AccountImpactServiceTests`
+- `SwiftDataModelTests`
+- `AdvancedFeaturesViewModelTests`
+- `expensesUITests`
 
 ## Multi-moneda
 
@@ -106,5 +114,31 @@ La Fase 8 agrega tests para:
 - Decodificar backups generados antes de incorporar cuentas de patrimonio.
 - Validar agregados mensuales del dashboard con miles de gastos e ingresos.
 - Medir performance de `monthlyMovementTotals(expenses:incomes:monthsBack:)` como base para futuras revisiones de rendimiento.
+- Crear un `ModelContainer` en memoria con el esquema SwiftData actual e insertar los modelos principales.
+- Compilar un target de UI tests con smoke tests para dashboard, navegacion a gastos y apertura de alta de gasto.
 
-Quedan pendientes UI tests para flujos principales, tests de migracion SwiftData, revision de accesibilidad y revision general de rendimiento.
+La Fase 10 agrega tests para:
+
+- Seleccionar store en memoria durante UI tests.
+- Mantener persistencia local cuando la configuracion CloudKit esta incompleta.
+- Seleccionar CloudKit privado cuando Bundle ID, Team ID, contenedor y capability estan listos.
+
+La Fase 11 agrega tests para:
+
+- Calcular avance, restante y porcentaje de objetivos de ahorro.
+- Detectar presupuestos superados.
+- Detectar gastos inusuales por promedio historico de categoria y moneda.
+- Comparar ingresos, gastos y balance contra el mes anterior.
+- Incluir objetivos de ahorro y recordatorio diario en backups.
+
+El scheme principal compila `expensesUITests`, pero los marca como omitidos para la ejecucion por defecto. En macOS, la ejecucion de UI tests requiere permisos de automatizacion/accesibilidad para Xcode; sin esos permisos el runner puede fallar con `Timed out while enabling automation mode`.
+
+Para validar compilacion de unit tests y UI tests:
+
+```bash
+xcodebuild build-for-testing -project expenses.xcodeproj -scheme expenses -destination 'platform=macOS'
+```
+
+Para ejecutar tambien UI tests, habilitar automatizacion de macOS para Xcode y quitar el skip del testable `expensesUITests` en el scheme.
+
+Quedan pendientes migraciones SwiftData versionadas, revision completa de accesibilidad y revision general de rendimiento.

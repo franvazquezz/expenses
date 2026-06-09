@@ -3,7 +3,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct TextFileDocument: FileDocument {
-    static var readableContentTypes: [UTType] { [.plainText, .commaSeparatedText, .json] }
+    static var readableContentTypes: [UTType] { [.plainText, .commaSeparatedText, .json, .xml] }
+    static var writableContentTypes: [UTType] { [.plainText, .commaSeparatedText, .json, .xml] }
 
     var text: String
 
@@ -36,6 +37,8 @@ struct DataManagementView: View {
     @Query(sort: \RecurringExpense.nextRunDate) private var recurringExpenses: [RecurringExpense]
     @Query(sort: \RecurringIncome.nextRunDate) private var recurringIncomes: [RecurringIncome]
     @Query(sort: \Account.name) private var accounts: [Account]
+    @Query(sort: \SavingsGoal.name) private var savingsGoals: [SavingsGoal]
+    @Query(sort: \DailyReminderSettings.updatedAt) private var reminderSettings: [DailyReminderSettings]
 
     @State private var exportDocument = TextFileDocument()
     @State private var exportContentType = UTType.plainText
@@ -43,6 +46,10 @@ struct DataManagementView: View {
     @State private var showingExporter = false
     @State private var importKind: ImportKind?
     @State private var statusMessage = "Sin operaciones recientes."
+
+    private let dataActionColumns = [
+        GridItem(.adaptive(minimum: 160), spacing: 12, alignment: .leading)
+    ]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -56,7 +63,7 @@ struct DataManagementView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppTheme.pageSpacing) {
                     AppPanel(title: "CSV", systemImage: "tablecells") {
-                        HStack(spacing: 12) {
+                        LazyVGrid(columns: dataActionColumns, alignment: .leading, spacing: 12) {
                             Button {
                                 exportExpensesCSV()
                             } label: {
@@ -70,6 +77,12 @@ struct DataManagementView: View {
                             }
 
                             Button {
+                                exportMovementsExcel()
+                            } label: {
+                                Label("Exportar Excel", systemImage: "tablecells.badge.ellipsis")
+                            }
+
+                            Button {
                                 importKind = .expensesCSV
                             } label: {
                                 Label("Importar gastos", systemImage: "square.and.arrow.down")
@@ -80,6 +93,20 @@ struct DataManagementView: View {
                             } label: {
                                 Label("Importar ingresos", systemImage: "square.and.arrow.down")
                             }
+
+                            Button {
+                                importKind = .bankCSV
+                            } label: {
+                                Label("Importar banco", systemImage: "building.columns")
+                            }
+                        }
+                    }
+
+                    AppPanel(title: "JSON", systemImage: "curlybraces") {
+                        Button {
+                            exportMovementsJSON()
+                        } label: {
+                            Label("Exportar movimientos", systemImage: "square.and.arrow.up")
                         }
                     }
 
@@ -147,6 +174,25 @@ struct DataManagementView: View {
         showingExporter = true
     }
 
+    private func exportMovementsExcel() {
+        exportDocument = TextFileDocument(text: DataTransferService.exportMovementsExcel(expenses: expenses, incomes: incomes))
+        exportContentType = .xml
+        exportFilename = "movimientos.xls"
+        showingExporter = true
+    }
+
+    private func exportMovementsJSON() {
+        do {
+            let export = DataTransferService.makeMovementsJSONExport(expenses: expenses, incomes: incomes)
+            exportDocument = TextFileDocument(text: try DataTransferService.encodeMovementsJSONExport(export))
+            exportContentType = .json
+            exportFilename = "movimientos.json"
+            showingExporter = true
+        } catch {
+            statusMessage = "No se pudo exportar JSON: \(error.localizedDescription)"
+        }
+    }
+
     private func exportBackup() {
         do {
             let backup = DataTransferService.makeBackup(
@@ -157,7 +203,9 @@ struct DataManagementView: View {
                 budgets: budgets,
                 recurringExpenses: recurringExpenses,
                 recurringIncomes: recurringIncomes,
-                accounts: accounts
+                accounts: accounts,
+                savingsGoals: savingsGoals,
+                dailyReminderSettings: reminderSettings.first
             )
             exportDocument = TextFileDocument(text: try DataTransferService.encodeBackup(backup))
             exportContentType = .json
@@ -196,6 +244,11 @@ struct DataManagementView: View {
                 let importedIncomes = try DataTransferService.importIncomesCSV(text)
                 importedIncomes.forEach { modelContext.insert($0) }
                 statusMessage = "Se importaron \(importedIncomes.count) ingresos."
+            case .bankCSV:
+                let importedMovements = try DataTransferService.importBankCSV(text, accounts: accounts)
+                importedMovements.expenses.forEach { modelContext.insert($0) }
+                importedMovements.incomes.forEach { modelContext.insert($0) }
+                statusMessage = "Se importaron \(importedMovements.expenses.count) gastos y \(importedMovements.incomes.count) ingresos bancarios."
             case .backup:
                 let backup = try DataTransferService.decodeBackup(text)
                 restore(backup)
@@ -209,6 +262,8 @@ struct DataManagementView: View {
         let existingCurrencyCodes = Set(currencies.map(\.code))
         let existingRateKeys = Set(exchangeRates.map { "\($0.fromCurrency)-\($0.toCurrency)" })
         let existingAccountIDs = Set(accounts.map(\.id))
+        let existingSavingsGoalIDs = Set(savingsGoals.map(\.id))
+        let existingReminderSettingsIDs = Set(reminderSettings.map(\.id))
 
         DataTransferService.expenses(from: backup).forEach { modelContext.insert($0) }
         DataTransferService.incomes(from: backup).forEach { modelContext.insert($0) }
@@ -224,13 +279,22 @@ struct DataManagementView: View {
         DataTransferService.accounts(from: backup)
             .filter { !existingAccountIDs.contains($0.id) }
             .forEach { modelContext.insert($0) }
+        DataTransferService.savingsGoals(from: backup)
+            .filter { !existingSavingsGoalIDs.contains($0.id) }
+            .forEach { modelContext.insert($0) }
+        if let settings = DataTransferService.dailyReminderSettings(from: backup),
+           !existingReminderSettingsIDs.contains(settings.id),
+           reminderSettings.isEmpty {
+            modelContext.insert(settings)
+        }
 
-        statusMessage = "Backup restaurado: \(backup.expenses.count) gastos, \(backup.incomes.count) ingresos, \(backup.budgets.count) presupuestos y \(backup.accounts.count) cuentas."
+        statusMessage = "Backup restaurado: \(backup.expenses.count) gastos, \(backup.incomes.count) ingresos, \(backup.budgets.count) presupuestos, \(backup.accounts.count) cuentas y \(backup.savingsGoals.count) objetivos."
     }
 }
 
 private enum ImportKind {
     case expensesCSV
     case incomesCSV
+    case bankCSV
     case backup
 }

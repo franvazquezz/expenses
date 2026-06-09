@@ -2,16 +2,28 @@
 
 ## Estado
 
-La app todavia usa SwiftData local. CloudKit queda preparado a nivel de decision tecnica, pero no se activa hasta contar con:
+La app usa SwiftData local por defecto. El runtime ya puede crear un `ModelContainer` con CloudKit privado cuando la configuracion de readiness esta completa, pero no se activa hasta contar con:
 
 - Apple Developer Team.
 - Bundle ID estable, no `com.local.expenses`.
 - Contenedor iCloud privado, por ejemplo `iCloud.com.pancho.expenses`.
 - Capability iCloud + CloudKit configurada en Xcode.
 
+Mientras esos datos no esten configurados, `AppPersistenceService` fuerza persistencia local. Durante UI tests usa un store SwiftData en memoria con `EXPENSES_UI_TESTING=1`.
+
 ## Decision
 
 La sincronizacion debe usar CloudKit privado con SwiftData. No se agrega backend propio ni login externo; la identidad depende de la cuenta iCloud del usuario.
+
+## Activacion
+
+La app lee estos valores desde el `Info.plist` generado por Xcode:
+
+- `EXPENSESDevelopmentTeam`.
+- `EXPENSESCloudKitContainerIdentifier`.
+- `EXPENSESCloudKitEnabled`.
+
+El proyecto define los build settings `EXPENSES_CLOUDKIT_CONTAINER_IDENTIFIER` y `EXPENSES_CLOUDKIT_ENABLED` en `NO` por defecto. Para activar sincronizacion real hay que configurar ademas el Apple Developer Team, un Bundle ID estable, la capability iCloud + CloudKit y los entitlements del contenedor.
 
 ## Estrategia de conflictos
 

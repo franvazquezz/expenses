@@ -40,6 +40,8 @@ struct AppBackup: Codable {
     let recurringExpenses: [RecurringExpenseBackup]
     let recurringIncomes: [RecurringIncomeBackup]
     let accounts: [AccountBackup]
+    let savingsGoals: [SavingsGoalBackup]
+    let dailyReminderSettings: DailyReminderSettingsBackup?
 
     enum CodingKeys: String, CodingKey {
         case version
@@ -52,6 +54,8 @@ struct AppBackup: Codable {
         case recurringExpenses
         case recurringIncomes
         case accounts
+        case savingsGoals
+        case dailyReminderSettings
     }
 
     init(
@@ -64,7 +68,9 @@ struct AppBackup: Codable {
         budgets: [BudgetBackup],
         recurringExpenses: [RecurringExpenseBackup],
         recurringIncomes: [RecurringIncomeBackup],
-        accounts: [AccountBackup] = []
+        accounts: [AccountBackup] = [],
+        savingsGoals: [SavingsGoalBackup] = [],
+        dailyReminderSettings: DailyReminderSettingsBackup? = nil
     ) {
         self.version = version
         self.createdAt = createdAt
@@ -76,6 +82,8 @@ struct AppBackup: Codable {
         self.recurringExpenses = recurringExpenses
         self.recurringIncomes = recurringIncomes
         self.accounts = accounts
+        self.savingsGoals = savingsGoals
+        self.dailyReminderSettings = dailyReminderSettings
     }
 
     init(from decoder: Decoder) throws {
@@ -91,6 +99,8 @@ struct AppBackup: Codable {
         recurringExpenses = try container.decode([RecurringExpenseBackup].self, forKey: .recurringExpenses)
         recurringIncomes = try container.decode([RecurringIncomeBackup].self, forKey: .recurringIncomes)
         accounts = try container.decodeIfPresent([AccountBackup].self, forKey: .accounts) ?? []
+        savingsGoals = try container.decodeIfPresent([SavingsGoalBackup].self, forKey: .savingsGoals) ?? []
+        dailyReminderSettings = try container.decodeIfPresent(DailyReminderSettingsBackup.self, forKey: .dailyReminderSettings)
     }
 }
 
@@ -190,6 +200,39 @@ struct AccountBackup: Codable {
     let updatedAt: Date
 }
 
+struct SavingsGoalBackup: Codable {
+    let id: UUID
+    let name: String
+    let targetAmount: Double
+    let currentAmount: Double
+    let currency: String
+    let targetDate: Date?
+    let note: String
+    let isActive: Bool
+    let createdAt: Date
+    let updatedAt: Date
+}
+
+struct DailyReminderSettingsBackup: Codable {
+    let id: UUID
+    let isEnabled: Bool
+    let hour: Int
+    let minute: Int
+    let updatedAt: Date
+}
+
+struct MovementJSONExport: Codable {
+    let version: Int
+    let createdAt: Date
+    let expenses: [ExpenseBackup]
+    let incomes: [IncomeBackup]
+}
+
+struct BankCSVImportResult {
+    let expenses: [Expense]
+    let incomes: [Income]
+}
+
 enum DataTransferService {
     static let expenseCSVHeader = [
         "date",
@@ -217,6 +260,18 @@ enum DataTransferService {
         "isConfirmed"
     ]
 
+    static let bankCSVHeader = [
+        "date",
+        "description",
+        "amount",
+        "currency",
+        "category",
+        "paymentMethod",
+        "note",
+        "accountName",
+        "isConfirmed"
+    ]
+
     static func exportExpensesCSV(_ expenses: [Expense]) -> String {
         csvLines(
             header: expenseCSVHeader,
@@ -236,6 +291,49 @@ enum DataTransferService {
                 ]
             }
         )
+    }
+
+    static func exportMovementsExcel(expenses: [Expense], incomes: [Income]) -> String {
+        let expenseRows = expenses.map { expense in
+            [
+                formatDate(expense.date),
+                formatNumber(expense.originalAmount),
+                expense.originalCurrency,
+                formatNumber(expense.convertedAmount),
+                expense.baseCurrency,
+                expense.category,
+                expense.expenseDescription,
+                expense.note,
+                expense.paymentMethod,
+                expense.tags.joined(separator: "|"),
+                String(expense.isConfirmed)
+            ]
+        }
+        let incomeRows = incomes.map { income in
+            [
+                formatDate(income.date),
+                formatNumber(income.originalAmount),
+                income.originalCurrency,
+                formatNumber(income.convertedAmount),
+                income.baseCurrency,
+                income.category,
+                income.incomeDescription,
+                income.note,
+                String(income.isConfirmed)
+            ]
+        }
+
+        return """
+        <?xml version="1.0"?>
+        <?mso-application progid="Excel.Sheet"?>
+        <Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet"
+                  xmlns:o="urn:schemas-microsoft-com:office:office"
+                  xmlns:x="urn:schemas-microsoft-com:office:excel"
+                  xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+        \(excelWorksheet(name: "Gastos", header: expenseCSVHeader, rows: expenseRows))
+        \(excelWorksheet(name: "Ingresos", header: incomeCSVHeader, rows: incomeRows))
+        </Workbook>
+        """
     }
 
     static func importExpensesCSV(_ text: String) throws -> [Expense] {
@@ -339,6 +437,94 @@ enum DataTransferService {
         }
     }
 
+    static func importBankCSV(_ text: String, accounts: [Account] = []) throws -> BankCSVImportResult {
+        let rows = try parseCSV(text)
+        guard rows.first == bankCSVHeader else {
+            throw DataTransferError.invalidHeader
+        }
+
+        var accountIDsByNameAndCurrency: [String: UUID] = [:]
+        accounts.forEach { account in
+            let key = "\(account.name.lowercased())-\(account.currency)"
+            if accountIDsByNameAndCurrency[key] == nil {
+                accountIDsByNameAndCurrency[key] = account.id
+            }
+        }
+        var importedExpenses: [Expense] = []
+        var importedIncomes: [Income] = []
+
+        try rows.dropFirst().enumerated().forEach { offset, row in
+            let line = offset + 2
+            guard row.count == bankCSVHeader.count else {
+                throw DataTransferError.invalidColumnCount(line: line)
+            }
+            guard let date = parseDate(row[0]) else {
+                throw DataTransferError.invalidDate(line: line)
+            }
+            guard let amount = Double(row[2]), amount != 0 else {
+                throw DataTransferError.invalidAmount(line: line)
+            }
+            guard let isConfirmed = parseBool(row[8]) else {
+                throw DataTransferError.invalidBoolean(line: line)
+            }
+            guard hasRequiredValues([row[1], row[3]]) else {
+                throw DataTransferError.missingRequiredField(line: line)
+            }
+
+            let currency = row[3]
+            let category = row[4].trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "Otros" : row[4]
+            let accountName = row[7].trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+            let accountID = accountIDsByNameAndCurrency["\(accountName)-\(currency)"]
+
+            if amount < 0 {
+                importedExpenses.append(
+                    Expense(
+                        amount: abs(amount),
+                        currency: currency,
+                        date: date,
+                        category: category,
+                        expenseDescription: row[1],
+                        note: row[6],
+                        paymentMethod: row[5],
+                        isConfirmed: isConfirmed,
+                        accountID: accountID
+                    )
+                )
+            } else {
+                importedIncomes.append(
+                    Income(
+                        amount: amount,
+                        currency: currency,
+                        date: date,
+                        category: category,
+                        incomeDescription: row[1],
+                        note: row[6],
+                        isConfirmed: isConfirmed,
+                        accountID: accountID
+                    )
+                )
+            }
+        }
+
+        return BankCSVImportResult(expenses: importedExpenses, incomes: importedIncomes)
+    }
+
+    static func makeMovementsJSONExport(expenses: [Expense], incomes: [Income]) -> MovementJSONExport {
+        MovementJSONExport(
+            version: 1,
+            createdAt: Date(),
+            expenses: expenses.map { expenseBackup(from: $0) },
+            incomes: incomes.map { incomeBackup(from: $0) }
+        )
+    }
+
+    static func encodeMovementsJSONExport(_ export: MovementJSONExport) throws -> String {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        return String(data: try encoder.encode(export), encoding: .utf8) ?? ""
+    }
+
     static func makeBackup(
         expenses: [Expense],
         incomes: [Income],
@@ -347,41 +533,15 @@ enum DataTransferService {
         budgets: [Budget],
         recurringExpenses: [RecurringExpense],
         recurringIncomes: [RecurringIncome],
-        accounts: [Account]
+        accounts: [Account],
+        savingsGoals: [SavingsGoal] = [],
+        dailyReminderSettings: DailyReminderSettings? = nil
     ) -> AppBackup {
         AppBackup(
             version: 1,
             createdAt: Date(),
-            expenses: expenses.map { expense in
-                ExpenseBackup(
-                    originalAmount: expense.originalAmount,
-                    originalCurrency: expense.originalCurrency,
-                    convertedAmount: expense.convertedAmount,
-                    baseCurrency: expense.baseCurrency,
-                    date: expense.date,
-                    category: expense.category,
-                    expenseDescription: expense.expenseDescription,
-                    note: expense.note,
-                    paymentMethod: expense.paymentMethod,
-                    tags: expense.tags,
-                    isConfirmed: expense.isConfirmed,
-                    accountID: expense.accountID
-                )
-            },
-            incomes: incomes.map { income in
-                IncomeBackup(
-                    originalAmount: income.originalAmount,
-                    originalCurrency: income.originalCurrency,
-                    convertedAmount: income.convertedAmount,
-                    baseCurrency: income.baseCurrency,
-                    date: income.date,
-                    category: income.category,
-                    incomeDescription: income.incomeDescription,
-                    note: income.note,
-                    isConfirmed: income.isConfirmed,
-                    accountID: income.accountID
-                )
-            },
+            expenses: expenses.map { expenseBackup(from: $0) },
+            incomes: incomes.map { incomeBackup(from: $0) },
             currencies: currencies.map { currency in
                 CurrencyBackup(
                     code: currency.code,
@@ -454,6 +614,29 @@ enum DataTransferService {
                     note: account.note,
                     isActive: account.isActive,
                     updatedAt: account.updatedAt
+                )
+            },
+            savingsGoals: savingsGoals.map { goal in
+                SavingsGoalBackup(
+                    id: goal.id,
+                    name: goal.name,
+                    targetAmount: goal.targetAmount,
+                    currentAmount: goal.currentAmount,
+                    currency: goal.currency,
+                    targetDate: goal.targetDate,
+                    note: goal.note,
+                    isActive: goal.isActive,
+                    createdAt: goal.createdAt,
+                    updatedAt: goal.updatedAt
+                )
+            },
+            dailyReminderSettings: dailyReminderSettings.map { settings in
+                DailyReminderSettingsBackup(
+                    id: settings.id,
+                    isEnabled: settings.isEnabled,
+                    hour: settings.hour,
+                    minute: settings.minute,
+                    updatedAt: settings.updatedAt
                 )
             }
         )
@@ -604,6 +787,35 @@ enum DataTransferService {
         }
     }
 
+    static func savingsGoals(from backup: AppBackup) -> [SavingsGoal] {
+        backup.savingsGoals.map { item in
+            SavingsGoal(
+                id: item.id,
+                name: item.name,
+                targetAmount: item.targetAmount,
+                currentAmount: item.currentAmount,
+                currency: item.currency,
+                targetDate: item.targetDate,
+                note: item.note,
+                isActive: item.isActive,
+                createdAt: item.createdAt,
+                updatedAt: item.updatedAt
+            )
+        }
+    }
+
+    static func dailyReminderSettings(from backup: AppBackup) -> DailyReminderSettings? {
+        backup.dailyReminderSettings.map { item in
+            DailyReminderSettings(
+                id: item.id,
+                isEnabled: item.isEnabled,
+                hour: item.hour,
+                minute: item.minute,
+                updatedAt: item.updatedAt
+            )
+        }
+    }
+
     private static func csvLines(header: [String], rows: [[String]]) -> String {
         ([header] + rows)
             .map { row in row.map(escapeCSVValue).joined(separator: ",") }
@@ -699,5 +911,68 @@ enum DataTransferService {
 
     private static func hasRequiredValues(_ values: [String]) -> Bool {
         values.allSatisfy { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+    }
+
+    private static func excelWorksheet(name: String, header: [String], rows: [[String]]) -> String {
+        let allRows = [header] + rows
+        let rowXML = allRows
+            .map { row in
+                let cells = row
+                    .map { value in
+                        "<Cell><Data ss:Type=\"String\">\(escapeXML(value))</Data></Cell>"
+                    }
+                    .joined()
+                return "<Row>\(cells)</Row>"
+            }
+            .joined(separator: "\n")
+
+        return """
+        <Worksheet ss:Name="\(escapeXML(name))">
+        <Table>
+        \(rowXML)
+        </Table>
+        </Worksheet>
+        """
+    }
+
+    private static func escapeXML(_ value: String) -> String {
+        value
+            .replacingOccurrences(of: "&", with: "&amp;")
+            .replacingOccurrences(of: "<", with: "&lt;")
+            .replacingOccurrences(of: ">", with: "&gt;")
+            .replacingOccurrences(of: "\"", with: "&quot;")
+            .replacingOccurrences(of: "'", with: "&apos;")
+    }
+
+    private static func expenseBackup(from expense: Expense) -> ExpenseBackup {
+        ExpenseBackup(
+            originalAmount: expense.originalAmount,
+            originalCurrency: expense.originalCurrency,
+            convertedAmount: expense.convertedAmount,
+            baseCurrency: expense.baseCurrency,
+            date: expense.date,
+            category: expense.category,
+            expenseDescription: expense.expenseDescription,
+            note: expense.note,
+            paymentMethod: expense.paymentMethod,
+            tags: expense.tags,
+            isConfirmed: expense.isConfirmed,
+            accountID: expense.accountID
+        )
+    }
+
+    private static func incomeBackup(from income: Income) -> IncomeBackup {
+        IncomeBackup(
+            originalAmount: income.originalAmount,
+            originalCurrency: income.originalCurrency,
+            convertedAmount: income.convertedAmount,
+            baseCurrency: income.baseCurrency,
+            date: income.date,
+            category: income.category,
+            incomeDescription: income.incomeDescription,
+            note: income.note,
+            isConfirmed: income.isConfirmed,
+            accountID: income.accountID
+        )
     }
 }

@@ -29,6 +29,7 @@ struct AddExpenseView: View {
                 }
         }
         .frame(minWidth: 480, minHeight: 520)
+        .accessibilityIdentifier("expenseForm.add")
         .onAppear {
             viewModel.setDefaultCurrencyIfNeeded(CurrencyViewModel.defaultCurrencyCode(from: currencies))
             viewModel.updateConversion(using: exchangeRates)
@@ -70,6 +71,7 @@ struct ExpenseFormView: View {
                     .onChange(of: viewModel.amountText) {
                         viewModel.updateConversion(using: exchangeRates)
                     }
+                    .accessibilityIdentifier("expenseForm.amountField")
 
                 Picker("Moneda", selection: $viewModel.currency) {
                     ForEach(activeCurrencies) { currency in
@@ -92,9 +94,11 @@ struct ExpenseFormView: View {
 
             Section("Detalle") {
                 TextField("Descripcion", text: $viewModel.expenseDescription)
+                    .accessibilityIdentifier("expenseForm.descriptionField")
 
                 TextField("Notas", text: $viewModel.note, axis: .vertical)
                     .lineLimit(2...4)
+                    .accessibilityIdentifier("expenseForm.noteField")
 
                 Picker("Metodo de pago", selection: $viewModel.paymentMethod) {
                     Text("Sin especificar").tag("")
@@ -111,6 +115,7 @@ struct ExpenseFormView: View {
                 }
 
                 TextField("Etiquetas separadas por coma", text: $viewModel.tagsText)
+                    .accessibilityIdentifier("expenseForm.tagsField")
             }
 
             Section("Conversion") {
@@ -125,6 +130,7 @@ struct ExpenseFormView: View {
 
                 TextField("Monto convertido", text: $viewModel.convertedAmountText)
                     .textFieldStyle(.roundedBorder)
+                    .accessibilityIdentifier("expenseForm.convertedAmountField")
 
                 if viewModel.needsConversion {
                     Text("Se calcula con la cotizacion manual disponible. Si no existe, podes cargar el monto convertido manualmente.")

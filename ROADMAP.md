@@ -71,6 +71,7 @@
 
 - [x] Evaluar CloudKit.
 - [x] Definir estrategia de conflictos.
+- [x] Preparacion runtime para SwiftData con CloudKit privado.
 - [ ] Sincronizacion entre Macs.
 - [x] Preparar base para iPhone si se decide expandir plataforma.
 
@@ -79,7 +80,19 @@
 - [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto.
 - [x] Test de volumen alto para dashboard mensual.
 - [x] Test de compatibilidad de backup previo sin cuentas.
-- [ ] UI tests para flujos principales.
-- [ ] Tests de migracion SwiftData.
-- [ ] Revision de accesibilidad.
+- [x] Target de UI tests con smoke tests de dashboard, navegacion a gastos y apertura de alta de gasto.
+- [x] Test de esquema SwiftData actual con `ModelContainer` en memoria.
+- [x] Identificadores de accesibilidad iniciales para navegacion y alta de gastos.
+- [ ] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
+- [ ] Tests de migracion SwiftData versionada cuando se defina `SchemaMigrationPlan`.
+- [ ] Revision completa de accesibilidad.
 - [ ] Revision general de rendimiento con volumen alto de gastos.
+
+## Fase 9 - Funciones avanzadas locales
+
+- [x] Objetivos de ahorro.
+- [x] Comparacion mensual.
+- [x] Alertas de presupuesto superado.
+- [x] Alertas de gasto inusual.
+- [x] Recordatorio de carga diaria configurable localmente.
+- [ ] Notificaciones del sistema para recordatorio diario si se decide pedir permisos.

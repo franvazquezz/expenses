@@ -16,6 +16,8 @@ Contiene entidades persistidas con SwiftData.
 - `RecurringExpense`: representa una plantilla de gasto recurrente con periodicidad, proxima fecha de generacion y estado activo.
 - `RecurringIncome`: representa una plantilla de ingreso recurrente con periodicidad, proxima fecha de generacion y estado activo.
 - `Account`: representa una cuenta, activo o pasivo con saldo manual, moneda, categoria, institucion y estado activo.
+- `SavingsGoal`: representa un objetivo de ahorro con monto objetivo, avance, moneda, fecha opcional y estado activo.
+- `DailyReminderSettings`: representa la configuracion local del recordatorio diario.
 
 ### ViewModels
 
@@ -32,14 +34,17 @@ Contiene logica de presentacion y transformacion de datos.
 - `RecurringExpenseViewModel`: valida plantillas recurrentes y genera gastos pendientes.
 - `RecurringIncomeViewModel`: valida plantillas recurrentes y genera ingresos pendientes.
 - `AccountViewModel`: valida cuentas patrimoniales y calcula activos, pasivos y patrimonio neto por moneda.
+- `SavingsGoalViewModel`: valida objetivos de ahorro y calcula avance, restante y porcentaje.
+- `AdvancedFeaturesViewModel`: calcula alertas de presupuesto, gastos inusuales, comparacion mensual y semilla de recordatorio.
 
 ### Services
 
 Contiene logica compartida que no depende de SwiftUI.
 
 - `SyncReadinessService`: evalua si el proyecto esta listo para activar CloudKit segun Bundle ID, Apple Developer Team, contenedor iCloud y capability.
-- `DataTransferService`: exporta/importa CSV de gastos e ingresos, valida importaciones y genera/restaura backups JSON.
+- `DataTransferService`: exporta/importa CSV de gastos e ingresos, exporta movimientos en Excel y JSON, importa CSV bancario normalizado, valida importaciones y genera/restaura backups JSON.
 - `AccountImpactService`: aplica y revierte el impacto de gastos e ingresos confirmados sobre saldos de cuentas.
+- `AppPersistenceService`: centraliza el `ModelContainer`; usa memoria para UI tests, SwiftData local por defecto y CloudKit privado solo cuando readiness esta completa.
 
 ### Views
 
@@ -57,18 +62,19 @@ Contiene pantallas SwiftUI.
 - `RecurringExpenseListView`: administra gastos recurrentes y permite generar pendientes manualmente.
 - `RecurringIncomeListView`: administra ingresos recurrentes y permite generar pendientes manualmente.
 - `NetWorthView`: administra activos y pasivos, y muestra patrimonio neto por moneda.
+- `AdvancedFeaturesView`: administra objetivos de ahorro, comparacion mensual, alertas avanzadas y recordatorio diario.
 - `SyncSettingsView`: muestra el estado de preparacion para CloudKit y los requisitos pendientes.
-- `DataManagementView`: administra exportacion CSV, importacion CSV, backup local y restauracion desde backup.
+- `DataManagementView`: administra exportacion CSV/Excel/JSON, importacion CSV, importacion bancaria, backup local y restauracion desde backup.
 
 ## Persistencia
 
-La persistencia local se configura en `expensesApp` con:
+La persistencia se configura en `expensesApp` a traves de `AppPersistenceService`:
 
 ```swift
-.modelContainer(for: [Expense.self, Income.self, Currency.self, ExchangeRate.self, Budget.self, RecurringExpense.self, RecurringIncome.self, Account.self])
+.modelContainer(modelContainer)
 ```
 
-SwiftData administra el almacenamiento local. No hay backend ni login en esta fase.
+SwiftData administra el almacenamiento. No hay backend ni login; cuando CloudKit este activado, la identidad dependera de iCloud. La app usa store local por defecto, store en memoria para UI tests y `ModelConfiguration` con CloudKit privado solo si la configuracion de readiness esta completa.
 
 ## Multi-moneda
 
@@ -122,10 +128,15 @@ La Fase 4 agrega transferencia de datos local:
 
 - CSV de gastos.
 - CSV de ingresos.
-- Backup JSON con gastos, ingresos, monedas, cotizaciones, presupuestos, plantillas recurrentes y cuentas patrimoniales.
+- Excel compatible con hojas de gastos e ingresos.
+- JSON de movimientos con gastos e ingresos para analisis o intercambio.
+- CSV bancario normalizado con movimientos positivos como ingresos y negativos como gastos.
+- Backup JSON con gastos, ingresos, monedas, cotizaciones, presupuestos, plantillas recurrentes, cuentas patrimoniales, objetivos de ahorro y recordatorio diario.
 - Restauracion desde backup JSON.
 
 Las importaciones CSV validan encabezado, cantidad de columnas, fechas, importes, monedas, categorias y estados booleanos. La restauracion desde backup importa registros sin borrar la base actual y omite monedas/cotizaciones ya existentes para evitar conflictos con campos unicos.
+
+La importacion bancaria espera el encabezado `date,description,amount,currency,category,paymentMethod,note,accountName,isConfirmed`. Si `accountName` coincide con una cuenta existente de la misma moneda, el movimiento queda asociado a esa cuenta.
 
 ## Presupuestos
 
@@ -178,6 +189,18 @@ Los movimientos pueden asociarse opcionalmente a una cuenta activa de la misma m
 
 `NetWorthView` incluye un dashboard analitico por cuenta que muestra saldo actual, ingresos confirmados, gastos confirmados y flujo neto. Estos agregados usan la moneda propia de cada cuenta y no consolidan divisas.
 
+## Funciones avanzadas
+
+La Fase 11 agrega funciones locales sobre los datos existentes:
+
+- Objetivos de ahorro persistidos en `SavingsGoal`.
+- Comparacion mensual de ingresos, gastos y balance contra el mes anterior, por moneda.
+- Alertas de presupuesto superado derivadas desde `BudgetViewModel.progress`.
+- Alertas de gasto inusual cuando un gasto del mes actual supera el promedio historico de su categoria y moneda.
+- Recordatorio diario configurable en `DailyReminderSettings`.
+
+Las alertas no se guardan en SwiftData: se calculan desde movimientos confirmados para evitar inconsistencias. El recordatorio diario todavia no agenda notificaciones del sistema; solo persiste la preferencia local hasta definir permisos y entitlements.
+
 ## Gastos recurrentes
 
 La Fase 5 agrega plantillas para gastos recurrentes como Netflix, Spotify, alquiler, expensas o internet.
@@ -205,7 +228,7 @@ Los ingresos recurrentes generados nacen con `isConfirmed = false`. No impactan 
 
 ## Sincronizacion
 
-La Fase 7 prepara CloudKit, pero no lo activa sin una decision explicita de firma y provisioning.
+La Fase 7 prepara CloudKit. El runtime ya puede seleccionar CloudKit privado, pero no lo activa sin una decision explicita de firma y provisioning.
 
 Requisitos pendientes para sincronizacion real:
 

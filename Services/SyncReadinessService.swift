@@ -7,12 +7,19 @@ struct SyncReadinessInput {
     let isCloudKitCapabilityEnabled: Bool
 
     static var projectDefault: SyncReadinessInput {
-        SyncReadinessInput(
+        let infoDictionary = Bundle.main.infoDictionary ?? [:]
+
+        return SyncReadinessInput(
             bundleIdentifier: Bundle.main.bundleIdentifier ?? "com.local.expenses",
-            developmentTeam: "",
-            cloudKitContainerIdentifier: nil,
-            isCloudKitCapabilityEnabled: false
+            developmentTeam: infoDictionary.stringValue(for: "EXPENSESDevelopmentTeam"),
+            cloudKitContainerIdentifier: infoDictionary.stringValue(for: "EXPENSESCloudKitContainerIdentifier"),
+            isCloudKitCapabilityEnabled: infoDictionary.boolValue(for: "EXPENSESCloudKitEnabled")
         )
+    }
+
+    var normalizedCloudKitContainerIdentifier: String? {
+        let trimmed = cloudKitContainerIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed?.isEmpty == false ? trimmed : nil
     }
 }
 
@@ -75,7 +82,7 @@ enum SyncReadinessService {
             issues.append(.missingDevelopmentTeam)
         }
 
-        if input.cloudKitContainerIdentifier?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty != false {
+        if input.normalizedCloudKitContainerIdentifier == nil {
             issues.append(.missingCloudKitContainer)
         }
 
@@ -84,5 +91,23 @@ enum SyncReadinessService {
         }
 
         return SyncReadinessReport(issues: issues)
+    }
+}
+
+private extension [String: Any] {
+    func stringValue(for key: String) -> String {
+        self[key] as? String ?? ""
+    }
+
+    func boolValue(for key: String) -> Bool {
+        if let value = self[key] as? Bool {
+            return value
+        }
+
+        guard let value = self[key] as? String else {
+            return false
+        }
+
+        return ["1", "YES", "TRUE", "true", "yes"].contains(value)
     }
 }

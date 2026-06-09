@@ -35,6 +35,20 @@
                ReferencedContainer = "container:expenses.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "300000000000000000000040"
+               BuildableName = "expensesUITests.xctest"
+               BlueprintName = "expensesUITests"
+               ReferencedContainer = "container:expenses.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -52,6 +66,16 @@
                BlueprintIdentifier = "200000000000000000000040"
                BuildableName = "expensesTests.xctest"
                BlueprintName = "expensesTests"
+               ReferencedContainer = "container:expenses.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "300000000000000000000040"
+               BuildableName = "expensesUITests.xctest"
+               BlueprintName = "expensesUITests"
                ReferencedContainer = "container:expenses.xcodeproj">
             </BuildableReference>
          </TestableReference>

@@ -3,10 +3,20 @@ import SwiftUI
 
 @main
 struct expensesApp: App {
+    private let modelContainer: ModelContainer
+
+    init() {
+        do {
+            modelContainer = try AppPersistenceService.makeModelContainer()
+        } catch {
+            fatalError("No se pudo inicializar la persistencia: \(error)")
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
             DashboardView()
         }
-        .modelContainer(for: [Expense.self, Income.self, Currency.self, ExchangeRate.self, Budget.self, RecurringExpense.self, RecurringIncome.self, Account.self])
+        .modelContainer(modelContainer)
     }
 }

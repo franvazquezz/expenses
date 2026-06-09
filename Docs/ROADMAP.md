@@ -124,10 +124,10 @@
 ## Fase 8 - Importacion y exportacion
 
 - [x] Exportar CSV.
-- [ ] Exportar Excel.
-- [ ] Exportar JSON.
+- [x] Exportar Excel.
+- [x] Exportar JSON.
 - [x] Importar CSV de gastos.
-- [ ] Importar CSV de bancos.
+- [x] Importar CSV de bancos.
 
 ## Fase 9 - Busquedas
 
@@ -145,16 +145,18 @@
 - [x] Evaluacion CloudKit + SwiftData.
 - [x] Estrategia de conflictos de sincronizacion.
 - [x] Preparacion para iPhone.
+- [x] Preparacion runtime para SwiftData con CloudKit privado.
 - [ ] Sincronizacion iCloud con CloudKit + SwiftData.
 - [ ] Sincronizacion entre MacBook, iMac y Mac Mini.
 
 ## Fase 11 - Funciones avanzadas
 
-- [ ] Objetivos de ahorro.
-- [ ] Comparacion mensual.
-- [ ] Alertas de presupuesto superado.
-- [ ] Alertas de gasto inusual.
-- [ ] Recordatorio de carga diaria.
+- [x] Objetivos de ahorro.
+- [x] Comparacion mensual.
+- [x] Alertas de presupuesto superado.
+- [x] Alertas de gasto inusual.
+- [x] Recordatorio de carga diaria configurable localmente.
+- [ ] Notificaciones del sistema para recordatorio diario si se decide pedir permisos.
 
 ## Fase 12 - Patrimonio personal
 
@@ -172,9 +174,12 @@
 - [x] Optimizacion inicial de agregados mensuales del dashboard para volumen alto.
 - [x] Test de volumen alto para dashboard mensual.
 - [x] Test de compatibilidad de backup previo sin cuentas.
-- [ ] UI tests para flujos principales.
-- [ ] Tests de migracion SwiftData.
-- [ ] Revision de accesibilidad.
+- [x] Target de UI tests con smoke tests de dashboard, navegacion a gastos y apertura de alta de gasto.
+- [x] Test de esquema SwiftData actual con `ModelContainer` en memoria.
+- [x] Identificadores de accesibilidad iniciales para navegacion y alta de gastos.
+- [ ] Ejecutar UI tests en entorno macOS con automatizacion habilitada.
+- [ ] Tests de migracion SwiftData versionada cuando se defina `SchemaMigrationPlan`.
+- [ ] Revision completa de accesibilidad.
 - [ ] Revision general de rendimiento con volumen alto de datos.
 
 ## Proximas fases posibles

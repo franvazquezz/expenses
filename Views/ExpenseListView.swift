@@ -26,16 +26,19 @@ struct ExpenseListView: View {
                 showingAddExpense = true
             }
             .padding([.horizontal, .top])
+            .accessibilityIdentifier("expenses.header")
 
             filters
 
             if filteredExpenses.isEmpty {
                 EmptyState(title: "Sin gastos", systemImage: "tray", message: "Agrega un gasto o cambia los filtros.")
+                    .accessibilityIdentifier("expenses.emptyState")
             } else {
                 expenseTable
             }
         }
         .navigationTitle("Gastos")
+        .accessibilityIdentifier("screen.expenses")
         .toolbar {
             ToolbarItem {
                 Button {
@@ -43,6 +46,7 @@ struct ExpenseListView: View {
                 } label: {
                     Label("Agregar gasto", systemImage: "plus")
                 }
+                .accessibilityIdentifier("expenses.addToolbarButton")
             }
         }
         .sheet(isPresented: $showingAddExpense) {
@@ -60,6 +64,7 @@ struct ExpenseListView: View {
                     TextField("Buscar", text: $viewModel.searchText)
                         .textFieldStyle(.roundedBorder)
                         .frame(width: 220)
+                        .accessibilityIdentifier("expenses.searchField")
 
                     Picker("Mes", selection: $viewModel.selectedMonth) {
                         ForEach(MonthFilter.recentMonths, id: \.self) { month in
@@ -128,6 +133,7 @@ struct ExpenseListView: View {
             } label: {
                 Label("Agregar", systemImage: "plus.circle.fill")
             }
+            .accessibilityIdentifier("expenses.addButton")
         }
     }
 

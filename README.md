@@ -4,7 +4,7 @@ App nativa para macOS hecha con SwiftUI y SwiftData para registrar y analizar ga
 
 ## Estado actual
 
-Fases 1 a 8 en progreso:
+Fases 1 a 11 implementadas en modo local:
 
 - App macOS nativa.
 - SwiftUI para UI.
@@ -30,10 +30,14 @@ Fases 1 a 8 en progreso:
 - Movimientos recurrentes generados como pendientes hasta confirmacion.
 - Dashboard y presupuestos calculados solo con movimientos confirmados.
 - Pantalla de sincronizacion con readiness para CloudKit.
+- Preparacion runtime para SwiftData con CloudKit privado cuando la configuracion iCloud este completa.
 - Estrategia de sincronizacion documentada en `Docs/CLOUDKIT_SYNC.md`.
 - Busqueda y filtros avanzados en gastos e ingresos.
 - Graficos de analisis mensual, categorias, balance y metodo de pago.
 - Exportacion e importacion CSV de gastos e ingresos.
+- Exportacion Excel compatible de movimientos.
+- Exportacion JSON de movimientos.
+- Importacion CSV bancaria normalizada.
 - Backup y restauracion local en JSON.
 - Patrimonio con cuentas, activos y pasivos manuales.
 - Calculo de patrimonio neto por moneda.
@@ -41,7 +45,13 @@ Fases 1 a 8 en progreso:
 - Impacto automatico de movimientos confirmados sobre saldos de cuentas.
 - Dashboard analitico por cuenta con ingresos, gastos y flujo neto.
 - Equivalente total de patrimonio en moneda principal usando cotizaciones manuales.
+- Objetivos de ahorro con avance, moneda y fecha opcional.
+- Comparacion mensual de ingresos, gastos y balance contra el mes anterior.
+- Alertas de presupuesto superado y gasto inusual.
+- Recordatorio diario configurable localmente.
 - Inicio de Fase 8 de calidad con optimizacion de agregados mensuales, test de volumen alto y compatibilidad de backups previos sin cuentas.
+- Target de UI tests para smoke tests de dashboard/gastos, con store SwiftData en memoria durante ejecucion de pruebas.
+- Test de esquema SwiftData actual con `ModelContainer` en memoria.
 
 ## Abrir en Xcode
 

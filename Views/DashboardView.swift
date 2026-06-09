@@ -12,6 +12,8 @@ struct DashboardView: View {
     @Query(sort: \RecurringExpense.nextRunDate) private var recurringExpenses: [RecurringExpense]
     @Query(sort: \RecurringIncome.nextRunDate) private var recurringIncomes: [RecurringIncome]
     @Query(sort: \Account.name) private var accounts: [Account]
+    @Query(sort: \SavingsGoal.name) private var savingsGoals: [SavingsGoal]
+    @Query(sort: \DailyReminderSettings.updatedAt) private var reminderSettings: [DailyReminderSettings]
 
     private let viewModel = DashboardViewModel()
 
@@ -23,60 +25,77 @@ struct DashboardView: View {
                 } label: {
                     Label("Dashboard", systemImage: "chart.pie")
                 }
+                .accessibilityIdentifier("navigation.dashboard")
 
                 NavigationLink {
                     ExpenseListView()
                 } label: {
                     Label("Gastos", systemImage: "list.bullet.rectangle")
                 }
+                .accessibilityIdentifier("navigation.expenses")
 
                 NavigationLink {
                     IncomeListView()
                 } label: {
                     Label("Ingresos", systemImage: "banknote")
                 }
+                .accessibilityIdentifier("navigation.incomes")
 
                 NavigationLink {
                     CurrencySettingsView()
                 } label: {
                     Label("Monedas", systemImage: "dollarsign.circle")
                 }
+                .accessibilityIdentifier("navigation.currencies")
 
                 NavigationLink {
                     BudgetListView()
                 } label: {
                     Label("Presupuestos", systemImage: "chart.bar.doc.horizontal")
                 }
+                .accessibilityIdentifier("navigation.budgets")
 
                 NavigationLink {
                     NetWorthView()
                 } label: {
                     Label("Patrimonio", systemImage: "building.columns")
                 }
+                .accessibilityIdentifier("navigation.netWorth")
+
+                NavigationLink {
+                    AdvancedFeaturesView()
+                } label: {
+                    Label("Avanzadas", systemImage: "sparkles")
+                }
+                .accessibilityIdentifier("navigation.advanced")
 
                 NavigationLink {
                     DataManagementView()
                 } label: {
                     Label("Datos", systemImage: "externaldrive")
                 }
+                .accessibilityIdentifier("navigation.data")
 
                 NavigationLink {
                     RecurringExpenseListView()
                 } label: {
                     Label("Gastos recurrentes", systemImage: "repeat.circle")
                 }
+                .accessibilityIdentifier("navigation.recurringExpenses")
 
                 NavigationLink {
                     RecurringIncomeListView()
                 } label: {
                     Label("Ingresos recurrentes", systemImage: "repeat.circle")
                 }
+                .accessibilityIdentifier("navigation.recurringIncomes")
 
                 NavigationLink {
                     SyncSettingsView()
                 } label: {
                     Label("Sincronizacion", systemImage: "icloud")
                 }
+                .accessibilityIdentifier("navigation.sync")
             }
             .navigationTitle("expenses")
             .navigationSplitViewColumnWidth(min: 180, ideal: 220)
@@ -94,6 +113,7 @@ struct DashboardView: View {
                 .forEach { modelContext.insert($0) }
             generateDueRecurringExpenses()
             generateDueRecurringIncomes()
+            seedReminderSettings()
         }
     }
 
@@ -108,6 +128,7 @@ struct DashboardView: View {
 
                 metricGrid
                 netWorthSummary
+                advancedSummary
                 analysisCharts
                 budgetProgress
 
@@ -121,6 +142,7 @@ struct DashboardView: View {
         }
         .background(.background)
         .navigationTitle("Dashboard")
+        .accessibilityIdentifier("screen.dashboard")
     }
 
     private var metricGrid: some View {
@@ -200,6 +222,72 @@ struct DashboardView: View {
                     }
                     Divider()
                 }
+            }
+        }
+    }
+
+    private var advancedSummary: some View {
+        Grid(horizontalSpacing: 16, verticalSpacing: 16) {
+            GridRow {
+                savingsGoalsSummary
+                activeAlertsSummary
+                dailyReminderSummary
+            }
+        }
+    }
+
+    private var savingsGoalsSummary: some View {
+        AppPanel(title: "Objetivos de ahorro", systemImage: "target") {
+            let activeGoals = SavingsGoalViewModel.progress(for: savingsGoals)
+
+            if activeGoals.isEmpty {
+                Text("No hay objetivos activos.")
+                    .foregroundStyle(.secondary)
+            } else {
+                ForEach(activeGoals.prefix(3)) { item in
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text(item.goal.name)
+                                .font(.subheadline)
+                            Spacer()
+                            Text(item.percentageText)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        ProgressView(value: item.percentage)
+                            .tint(item.percentage >= 1 ? AppTheme.incomeColor : AppTheme.balanceColor)
+                    }
+                    Divider()
+                }
+            }
+        }
+    }
+
+    private var activeAlertsSummary: some View {
+        AppPanel(title: "Alertas del mes", systemImage: "exclamationmark.triangle") {
+            let budgetAlerts = AdvancedFeaturesViewModel.budgetAlerts(budgets: budgets, expenses: expenses)
+            let unusualAlerts = AdvancedFeaturesViewModel.unusualExpenseAlerts(expenses: expenses)
+
+            if budgetAlerts.isEmpty && unusualAlerts.isEmpty {
+                Text("Sin alertas activas.")
+                    .foregroundStyle(.secondary)
+            } else {
+                Label("\(budgetAlerts.count) presupuestos superados", systemImage: "chart.bar.doc.horizontal")
+                    .foregroundStyle(budgetAlerts.isEmpty ? Color.secondary : AppTheme.expenseColor)
+                Label("\(unusualAlerts.count) gastos inusuales", systemImage: "waveform.path.ecg")
+                    .foregroundStyle(unusualAlerts.isEmpty ? Color.secondary : Color.orange)
+            }
+        }
+    }
+
+    private var dailyReminderSummary: some View {
+        AppPanel(title: "Recordatorio diario", systemImage: "bell.badge") {
+            if let settings = reminderSettings.first, settings.isEnabled {
+                Text("Activo a las \(twoDigit(settings.hour)):\(twoDigit(settings.minute))")
+                    .font(.subheadline)
+            } else {
+                Text("Desactivado")
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -296,6 +384,16 @@ struct DashboardView: View {
             }
             recurringIncome.nextRunDate = result.nextRunDate
         }
+    }
+
+    private func seedReminderSettings() {
+        if let seededSettings = AdvancedFeaturesViewModel.seedReminderSettingsIfNeeded(in: reminderSettings) {
+            modelContext.insert(seededSettings)
+        }
+    }
+
+    private func twoDigit(_ value: Int) -> String {
+        String(format: "%02d", value)
     }
 }
 
